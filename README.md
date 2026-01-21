@@ -14,7 +14,7 @@ Skills live here as a standalone, exportable snapshot. This repo is **not** serv
 
 - `cientos-rails/agent-skills/index.json` is maintained manually and **must be committed** with every PR that changes skills.
 - Add/remove skill entries as you add/remove skill folders.
-- Keep `path` values relative to the skills root (e.g. `kapso-webhook-management/SKILL.md`).
+- Keep `path` values relative to the skills root (e.g. `webhooks/SKILL.md`).
 
 ## Script runtime
 
