@@ -54,7 +54,7 @@ async function main() {
       params.set('per_page', String(limit));
       params.set('page', String(page));
 
-      const path = `/platform/v1/external_api_logs?${params.toString()}`;
+      const path = `/platform/v1/api_logs?${params.toString()}`;
       result.sources.api_call = await kapsoRequest(config, path);
     }
 

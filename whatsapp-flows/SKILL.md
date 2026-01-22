@@ -35,7 +35,7 @@ Required env vars:
 Notes:
 
 - Scripts derive Meta and Platform endpoints from the base URL.
-- Platform flow operations use Kapso flow IDs (no phone number scope required).
+- Platform flow operations use Kapso flow IDs; creating and some operations may require `--phone-number-id`.
 - Meta proxy scripts still require `--phone-number-id` or `--business-account-id` where noted.
 
 ## Script map

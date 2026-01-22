@@ -13,6 +13,9 @@ function buildWebhookPayload(flags) {
   if (active !== undefined) {
     payload.active = active;
   }
+  if (typeof flags.kind === 'string' && flags.kind.length > 0) {
+    payload.kind = flags.kind;
+  }
   if (typeof flags['payload-version'] === 'string' && flags['payload-version'].length > 0) {
     payload.payload_version = flags['payload-version'];
   }

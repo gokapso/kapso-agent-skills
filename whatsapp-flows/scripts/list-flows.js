@@ -5,11 +5,12 @@ const { run } = require('./lib/run');
 
 run(async () => {
   const { flags } = parseArgs(process.argv.slice(2));
+  const phoneNumberId = getStringFlag(flags, 'phone-number-id') || getStringFlag(flags, 'phone_number_id');
 
   const query = {
     status: getStringFlag(flags, 'status'),
     business_account_id: getStringFlag(flags, 'business-account-id'),
-    whatsapp_config_id: getStringFlag(flags, 'whatsapp-config-id'),
+    phone_number_id: phoneNumberId,
     name_contains: getStringFlag(flags, 'name-contains'),
     created_after: getStringFlag(flags, 'created-after'),
     created_before: getStringFlag(flags, 'created-before'),

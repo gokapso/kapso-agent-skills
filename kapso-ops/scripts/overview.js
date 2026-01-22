@@ -36,11 +36,11 @@ async function main() {
 
     const apiTotals = await kapsoRequest(
       config,
-      `/platform/v1/external_api_logs?period=${encodeURIComponent(period)}&per_page=1`
+      `/platform/v1/api_logs?period=${encodeURIComponent(period)}&per_page=1`
     );
     const apiErrors = await kapsoRequest(
       config,
-      `/platform/v1/external_api_logs?period=${encodeURIComponent(period)}&errors_only=true&per_page=1`
+      `/platform/v1/api_logs?period=${encodeURIComponent(period)}&errors_only=true&per_page=1`
     );
 
     const webhookTotals = await kapsoRequest(

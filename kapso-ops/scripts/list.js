@@ -28,7 +28,8 @@ async function main() {
       JSON.stringify(
         {
           ok: true,
-          usage: 'node /agent-skills/kapso-ops/scripts/list.js --phone-number-id <id> [--scope config|project]',
+          usage:
+            'node /agent-skills/kapso-ops/scripts/list.js --phone-number-id <id> [--scope config|project] [--kind <kapso|meta>] [--page <n>] [--per-page <n>]',
           env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
         },
         null,
@@ -43,6 +44,10 @@ async function main() {
     const scope = resolveScope(flags);
     const config = kapsoConfigFromEnv();
     let path = '';
+    const params = new URLSearchParams();
+    if (flags.kind) params.set('kind', flags.kind);
+    if (flags.page) params.set('page', flags.page);
+    if (flags['per-page']) params.set('per_page', flags['per-page']);
     if (scope === 'project') {
       path = '/platform/v1/whatsapp/webhooks';
     } else {
@@ -50,7 +55,8 @@ async function main() {
       path = `/platform/v1/whatsapp/phone_numbers/${encodeURIComponent(phoneNumberId)}/webhooks`;
     }
 
-    const data = await kapsoRequest(config, path);
+    const suffix = params.toString();
+    const data = await kapsoRequest(config, `${path}${suffix ? `?${suffix}` : ''}`);
 
     console.log(JSON.stringify(ok(data), null, 2));
     return 0;

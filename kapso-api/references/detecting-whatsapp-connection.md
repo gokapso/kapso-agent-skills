@@ -88,7 +88,7 @@ const setupLink = await fetch(`${KAPSO_API_BASE_URL}/platform/v1/customers/custo
 After successful setup, customer is redirected to:
 
 ```
-https://your-app.com/whatsapp/success?setup_link_id=...&status=completed&phone_number_id=123456789012345&business_account_id=...&whatsapp_config_id=...&provisioned_phone_number_id=...&display_phone_number=%2B15551234567
+https://your-app.com/whatsapp/success?setup_link_id=...&status=completed&phone_number_id=123456789012345&business_account_id=...&provisioned_phone_number_id=...&display_phone_number=%2B15551234567
 ```
 
 **Parameters**:
@@ -96,7 +96,6 @@ https://your-app.com/whatsapp/success?setup_link_id=...&status=completed&phone_n
 - `status` - Always `completed` for success
 - `phone_number_id` - WhatsApp phone number ID (primary identifier)
 - `business_account_id` - Meta WABA ID (if available)
-- `whatsapp_config_id` - Legacy identifier (still provided for backward compatibility)
 - `provisioned_phone_number_id` - Kapso phone number ID (if provisioning was used)
 - `display_phone_number` - E.164 formatted phone number (URL encoded)
 
@@ -110,8 +109,7 @@ app.get('/whatsapp/success', async (req, res) => {
     phone_number_id,
     business_account_id,
     provisioned_phone_number_id,
-    display_phone_number,
-    whatsapp_config_id  // Legacy support
+    display_phone_number
   } = req.query;
 
   // Update your database

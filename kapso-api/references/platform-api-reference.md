@@ -45,7 +45,7 @@ Webhooks:
 
 Messages and conversations:
 - `GET /whatsapp/messages`
-- `GET /whatsapp/messages/:id`
+- `GET /whatsapp/messages/:id` (WAMID)
 - `GET /whatsapp/conversations`
 - `GET /whatsapp/conversations/:id`
 
@@ -89,7 +89,7 @@ Integrations:
 - `POST /integrations/actions/:action_id/reload_props`
 
 Logs:
-- `GET /external_api_logs`
+- `GET /api_logs`
 - `GET /webhook_deliveries`
 
 Provider models:

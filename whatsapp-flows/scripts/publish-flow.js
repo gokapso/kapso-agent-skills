@@ -7,11 +7,11 @@ const { requireFlowId } = require('./lib/whatsapp-flow');
 run(async () => {
   const { flags } = parseArgs(process.argv.slice(2));
   const flowId = requireFlowId(flags);
-  const whatsappConfigId = getStringFlag(flags, 'whatsapp-config-id');
+  const phoneNumberId = getStringFlag(flags, 'phone-number-id') || getStringFlag(flags, 'phone_number_id');
   const body = {};
 
-  if (whatsappConfigId) {
-    body.whatsapp_config_id = whatsappConfigId;
+  if (phoneNumberId) {
+    body.phone_number_id = phoneNumberId;
   }
 
   return platformRequest({

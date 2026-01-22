@@ -5,9 +5,9 @@ const { run } = require('./lib/run');
 
 run(async () => {
   const { flags } = parseArgs(process.argv.slice(2));
-  const whatsappConfigId = getStringFlag(flags, 'whatsapp-config-id');
-  if (!whatsappConfigId) {
-    throw new Error('Missing required flag --whatsapp-config-id');
+  const phoneNumberId = getStringFlag(flags, 'phone-number-id') || getStringFlag(flags, 'phone_number_id');
+  if (!phoneNumberId) {
+    throw new Error('Missing required flag --phone-number-id');
   }
 
   const name = getStringFlag(flags, 'name');
@@ -15,7 +15,7 @@ run(async () => {
   const flowJson = await readFlagJson(flags, 'flow-json', 'flow-json-file');
 
   const body = {
-    whatsapp_config_id: whatsappConfigId
+    phone_number_id: phoneNumberId
   };
 
   if (name) body.name = name;

@@ -17,7 +17,7 @@ async function main() {
         {
           ok: true,
           usage:
-            'node /agent-skills/kapso-ops/scripts/messages.js [--direction <inbound|outbound>] [--status <pending|sent|delivered|read|failed>] [--phone-number <e164>] [--conversation-id <uuid>] [--message-type <text|image|audio|video|document>] [--whatsapp-config-id <id>] [--has-media true|false] [--page <n>] [--per-page <n>]',
+            'node /agent-skills/kapso-ops/scripts/messages.js [--direction <inbound|outbound>] [--status <pending|sent|delivered|read|failed>] [--phone-number <e164>] [--conversation-id <uuid>] [--message-type <text|image|audio|video|document>] [--phone-number-id <id>] [--has-media true|false] [--page <n>] [--per-page <n>]',
           env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
         },
         null,
@@ -36,7 +36,8 @@ async function main() {
     if (flags['phone-number']) params.set('phone_number', flags['phone-number']);
     if (flags['conversation-id']) params.set('conversation_id', flags['conversation-id']);
     if (flags['message-type']) params.set('message_type', flags['message-type']);
-    if (flags['whatsapp-config-id']) params.set('whatsapp_config_id', flags['whatsapp-config-id']);
+    if (flags['phone-number-id']) params.set('phone_number_id', flags['phone-number-id']);
+    if (flags.phone_number_id) params.set('phone_number_id', flags.phone_number_id);
 
     const hasMedia = parseBoolean(flags['has-media']);
     if (hasMedia !== undefined) params.set('has_media', String(hasMedia));

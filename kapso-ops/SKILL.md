@@ -1,6 +1,6 @@
 ---
 name: kapso-ops
-description: Operate and troubleshoot Kapso projects: webhooks, message delivery, API errors, webhook deliveries, and WhatsApp health checks.
+description: "Operate and troubleshoot Kapso projects: webhooks, message delivery, API errors, webhook deliveries, and WhatsApp health checks."
 ---
 
 # Kapso Ops
@@ -68,10 +68,10 @@ Start here:
 ## Commands
 
 ### Webhooks
-- `node scripts/list.js --phone-number-id <id> [--scope config|project]`
+- `node scripts/list.js --phone-number-id <id> [--scope config|project] [--kind <kapso|meta>] [--page <n>] [--per-page <n>]`
 - `node scripts/get.js --phone-number-id <id> --webhook-id <id> [--scope config|project]`
-- `node scripts/create.js --phone-number-id <id> --url <https://...> --events <csv|json-array> [--payload-version v1|v2] [--buffer-enabled true|false] [--buffer-window-seconds <n>] [--max-buffer-size <n>] [--inactivity-minutes <n>] [--headers <json>] [--active true|false]`
-- `node scripts/update.js --phone-number-id <id> --webhook-id <id> [--url ...] [--events ...] [--payload-version v1|v2] [--buffer-enabled true|false] [--buffer-window-seconds <n>] [--max-buffer-size <n>] [--inactivity-minutes <n>] [--headers <json>] [--active true|false]`
+- `node scripts/create.js --phone-number-id <id> --url <https://...> --events <csv|json-array> [--kind <kapso|meta>] [--payload-version v1|v2] [--buffer-enabled true|false] [--buffer-window-seconds <n>] [--max-buffer-size <n>] [--inactivity-minutes <n>] [--headers <json>] [--active true|false]`
+- `node scripts/update.js --phone-number-id <id> --webhook-id <id> [--url ...] [--events ...] [--kind <kapso|meta>] [--payload-version v1|v2] [--buffer-enabled true|false] [--buffer-window-seconds <n>] [--max-buffer-size <n>] [--inactivity-minutes <n>] [--headers <json>] [--active true|false]`
 - `node scripts/delete.js --phone-number-id <id> --webhook-id <id> [--scope config|project]`
 - `node scripts/test.js --webhook-id <id> [--event-type <value>]`
 

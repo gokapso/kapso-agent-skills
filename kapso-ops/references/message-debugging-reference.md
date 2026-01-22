@@ -2,7 +2,7 @@
 
 ## Message delivery failed
 
-1. Identify the message ID (`wamid.*` or internal UUID).
+1. Identify the message ID (`wamid.*`).
 2. Review the status timeline in order: sent -> delivered -> read.
 3. Surface error codes in status events and map to remediation.
 

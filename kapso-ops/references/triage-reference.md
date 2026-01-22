@@ -2,7 +2,7 @@
 
 ## Message delivery failed
 
-1. Collect message ID (`wamid.*` or internal UUID).
+1. Collect message ID (`wamid.*`).
 2. Inspect message lifecycle timeline.
 3. Translate error codes into user-facing guidance.
 
