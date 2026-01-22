@@ -8,6 +8,11 @@ description: "Manage WhatsApp Flows via Kapso Platform API: list/create/update/p
 ## Overview
 Use this skill to manage WhatsApp Flows end-to-end: discover flows, edit flow JSON via versions, publish/test, attach data endpoints, and inspect responses/logs. Scripts are single-operation JS files runnable with Node or Bun and print JSON to stdout.
 
+## Before editing Flow JSON
+
+- Always use Flow JSON `version: "7.3"` with `data_api_version: "3.0"`.
+- Read the full spec in `references/whatsapp-flows-spec.md` before editing.
+
 ## Quickstart
 Run scripts directly:
 
@@ -107,10 +112,12 @@ Data exchange payload essentials:
 - `data_exchange.flow_token`: opaque Meta token
 - `signature_valid`: boolean
 
-Success responses should return:
+Responses must include `version: "3.0"` and return:
 
-- `{ "screen": "NEXT_SCREEN_ID", "data": { ... } }`
+- `{ "version": "3.0", "screen": "NEXT_SCREEN_ID", "data": { ... } }`
 - Completion uses `screen: "SUCCESS"` with `extension_message_response.params`.
+
+Do not include `endpoint_uri` or `data_channel_uri` in the response (Kapso injects).
 
 ## Troubleshooting notes
 - If Preview shows `flow_token is missing`, the flow is in dynamic mode without a data endpoint. Attach one and refresh.
@@ -127,4 +134,4 @@ Some endpoints are not exposed yet in the Platform API. These scripts may return
 
 - `list-flow-responses` (Platform API missing flow responses endpoint)
 
-If a command fails with 404, surface that the endpoint is missing and note the dependency in the `platform-api` skill reference.
+If a command fails with 404, surface that the endpoint is missing and note the dependency in the `kapso-api` skill reference.
