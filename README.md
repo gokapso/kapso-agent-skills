@@ -1,40 +1,45 @@
 # Kapso Agent Skills
 
-This folder contains **Agent Skills** in the open `agentskills` format: each skill is a directory with a `SKILL.md` entrypoint and optional `scripts/`, `references/`, and `assets/`.
+> **Alpha**: These skills are in active development and subject to rapid change.
 
-Skills live here as a standalone, exportable snapshot. This repo is **not** served by Mintlify.
+Agent skills for [Kapso](https://kapso.ai), built on the open [Agent Skills](https://agentskills.io) format.
 
-## How Kapso Agent uses this folder
+## What are Agent Skills?
 
-- The Kapso Agent runtime loads the local discovery manifest at `cientos-rails/agent-skills/index.json`.
-- When a skill is activated, the runtime loads the referenced `SKILL.md` and injects it into the agent context (progressive disclosure).
-- For “actionable” skills, `SKILL.md` should point to `scripts/*` that can run in a bash-capable sandbox.
+Agent Skills are folders of instructions, scripts, and resources that agents can discover and use to perform tasks more accurately. Each skill is a directory with a `SKILL.md` entrypoint and optional supporting files.
 
-## Local workflow (for now)
+```
+my-skill/
+├── SKILL.md          # Required: instructions + metadata
+├── scripts/          # Optional: executable code
+├── references/       # Optional: documentation
+└── assets/           # Optional: templates, resources
+```
 
-- `cientos-rails/agent-skills/index.json` is maintained manually and **must be committed** with every PR that changes skills.
-- Add/remove skill entries as you add/remove skill folders.
-- Keep `path` values relative to the skills root (e.g. `webhooks/SKILL.md`).
+Skills use **progressive disclosure**: agents load only the name and description at startup, then read full instructions when a task matches. This keeps context usage efficient while giving agents access to detailed knowledge on demand.
 
-## Script runtime
+## SKILL.md format
 
-Default: **Node 18+ or Bun**. Scripts should run with `node` or `bun` (avoid `tsx`).
-If you want TypeScript, compile to JS before execution.
+Each skill requires a `SKILL.md` file with YAML frontmatter:
 
-Expected env vars (provided by Kapso Agent sandbox runner):
+```yaml
+---
+name: my-skill
+description: What this skill does and when to use it.
+---
 
-- `KAPSO_API_BASE_URL` (host only, no `/platform/v1`, e.g. `https://api.kapso.ai`)
-- `KAPSO_API_KEY` (project API key)
-- `PROJECT_ID`
-- `KAPSO_META_BASE_URL` (optional, Meta proxy base; defaults to `${KAPSO_API_BASE_URL}/meta`)
-- `KAPSO_META_GRAPH_VERSION` (optional, defaults to `v24.0`)
+# My Skill
 
-## Output contract for scripts
+Instructions for the agent...
+```
 
-Scripts should:
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | Lowercase identifier (letters, numbers, hyphens) |
+| `description` | Yes | When to use this skill (max 1024 chars) |
 
-- print machine-readable JSON to stdout on success
-- print a machine-readable JSON error to stderr on failure
-- exit `0` on success, non-zero on failure
+## Learn more
 
-See `_template/` for a copy/paste starter.
+- [Agent Skills specification](https://agentskills.io/specification)
+- [Authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
+- [Example skills](https://github.com/anthropics/skills)
