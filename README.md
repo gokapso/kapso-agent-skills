@@ -7,7 +7,7 @@ Agent skills for [Kapso](https://kapso.ai), built on the open [Agent Skills](htt
 ## Installation
 
 ```bash
-npx skills add gokapso/kapso-agent-skills
+npx skills add gokapso/agent-skills
 ```
 
 ## What are Agent Skills?
