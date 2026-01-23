@@ -4,6 +4,12 @@
 
 Agent skills for [Kapso](https://kapso.ai), built on the open [Agent Skills](https://agentskills.io) format.
 
+## Installation
+
+```bash
+npx skills add gokapso/kapso-agent-skills
+```
+
 ## What are Agent Skills?
 
 Agent Skills are folders of instructions, scripts, and resources that agents can discover and use to perform tasks more accurately. Each skill is a directory with a `SKILL.md` entrypoint and optional supporting files.
@@ -17,6 +23,16 @@ my-skill/
 ```
 
 Skills use **progressive disclosure**: agents load only the name and description at startup, then read full instructions when a task matches. This keeps context usage efficient while giving agents access to detailed knowledge on demand.
+
+## Available skills
+
+- **kapso-automation**: Manage workflows, functions, databases, and integrations
+- **whatsapp-messaging**: Send messages, create templates, handle interactive messages
+- **whatsapp-flows**: Build and deploy WhatsApp Flows with data endpoints
+- **kapso-api**: Customer management and WhatsApp connection setup
+- **kapso-ops**: Debug and troubleshoot Kapso projects
+
+Each skill contains detailed documentation in its `SKILL.md` file.
 
 ## SKILL.md format
 
