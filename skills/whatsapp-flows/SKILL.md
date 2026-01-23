@@ -1,143 +1,124 @@
 ---
 name: whatsapp-flows
-description: "Manage WhatsApp Flows via Kapso Platform API: list/create/update/publish flows, manage flow versions, attach data endpoints, and check encryption. Use Meta proxy only for send-test and delete operations."
+description: Manage WhatsApp Flows via Kapso Platform API. List, create, update, publish flows, manage versions, attach data endpoints, and check encryption. Use when working with WhatsApp Flows, flow JSON, or data endpoints.
 ---
 
-# Kapso WhatsApp Flow Management
+# WhatsApp Flow Management
 
-## Overview
-Use this skill to manage WhatsApp Flows end-to-end: discover flows, edit flow JSON via versions, publish/test, attach data endpoints, and inspect responses/logs. Scripts are single-operation JS files runnable with Node or Bun and print JSON to stdout.
+## When to use
 
-## Before making changes
+Use this skill to manage WhatsApp Flows end-to-end: discover flows, edit flow JSON via versions, publish/test, attach data endpoints, and inspect responses/logs.
 
-- Read `references/whatsapp-flows-spec.md` before editing Flow JSON.
-- Inspect the exact `scripts/` you will run to confirm endpoint paths and flags.
-- Use `assets/sample-flow.json` as the base for new Flow JSON.
+## Setup
 
-## Before editing Flow JSON
-
-- Always use Flow JSON `version: "7.3"` with `data_api_version: "3.0"`.
-- Read the full spec in `references/whatsapp-flows-spec.md` before editing.
-
-## Quickstart
-Run scripts directly:
-
-- `node /agent-skills/whatsapp-flows/scripts/list-flows.js`
-- `bun /agent-skills/whatsapp-flows/scripts/list-flows.js`
-
-Required env vars:
-
-- `KAPSO_API_BASE_URL` (host only, no `/platform/v1`, e.g. `https://api.kapso.ai`)
+Env vars:
+- `KAPSO_API_BASE_URL` (host only, no `/platform/v1`)
 - `KAPSO_API_KEY`
 - `PROJECT_ID`
 - `META_GRAPH_VERSION` (optional, default `v24.0`)
 
-Notes:
+Run scripts with Node or Bun:
+```bash
+node scripts/list-flows.js
+```
 
-- Scripts derive Meta and Platform endpoints from the base URL.
-- Platform flow operations use Kapso flow IDs; creating and some operations may require `--phone-number-id`.
-- Meta proxy scripts still require `--phone-number-id` or `--business-account-id` where noted.
+## How to
 
-## Script map
-Each script performs a single operation:
+### Create and publish a flow
 
-Platform API (WhatsApp Flow operations):
+1. Create flow: `node scripts/create-flow.js --phone-number-id <id> --name <name>`
+2. Read `references/whatsapp-flows-spec.md` for Flow JSON rules
+3. Update JSON: `node scripts/update-flow-json.js --flow-id <id> --file <path>`
+4. Publish: `node scripts/publish-flow.js --flow-id <id>`
+5. Test: `node scripts/send-test-flow.js --phone-number-id <id> --flow-id <id> --to <phone>`
 
-- `scripts/list-flows.js`
-- `scripts/create-flow.js`
-- `scripts/get-flow.js`
-- `scripts/read-flow-json.js`
-- `scripts/update-flow-json.js`
-- `scripts/publish-flow.js`
-- `scripts/get-data-endpoint.js`
-- `scripts/set-data-endpoint.js` (create/update function code)
-- `scripts/deploy-data-endpoint.js`
-- `scripts/register-data-endpoint.js`
-- `scripts/get-encryption-status.js`
-- `scripts/setup-encryption.js`
+### Attach a data endpoint (dynamic flows)
 
-Meta proxy (WhatsApp send/test + delete):
+1. Set up encryption: `node scripts/setup-encryption.js --flow-id <id>`
+2. Create endpoint: `node scripts/set-data-endpoint.js --flow-id <id> --code-file <path>`
+3. Deploy: `node scripts/deploy-data-endpoint.js --flow-id <id>`
+4. Register: `node scripts/register-data-endpoint.js --flow-id <id>`
 
-- `scripts/send-test-flow.js`
-- `scripts/delete-flow.js`
+### Debug flows
 
-Platform API (Kapso data endpoint + logs):
+- List responses: `node scripts/list-flow-responses.js --flow-id <id>`
+- Function logs: `node scripts/list-function-logs.js --flow-id <id>`
+- Function invocations: `node scripts/list-function-invocations.js --flow-id <id>`
 
-- `scripts/create-function.js`
-- `scripts/get-function.js`
-- `scripts/update-function.js`
-- `scripts/deploy-function.js`
-- `scripts/list-function-logs.js --flow-id <id>`
-- `scripts/list-function-invocations.js --flow-id <id> | --function-id <id>`
-- `scripts/list-flow-responses.js`
+## Flow JSON rules
 
-## Platform API endpoints (reference)
-These scripts call the Platform API endpoints below (host only; paths include `/platform/v1`):
+- Use `version: "7.3"` with `data_api_version: "3.0"`
+- Read the full spec in `references/whatsapp-flows-spec.md` before editing
+- Use `assets/sample-flow.json` as a starting point
 
-- `GET /platform/v1/whatsapp/flows`
-- `POST /platform/v1/whatsapp/flows`
-- `GET /platform/v1/whatsapp/flows/:id`
-- `POST /platform/v1/whatsapp/flows/:id/versions`
-- `GET /platform/v1/whatsapp/flows/:id/versions`
-- `GET /platform/v1/whatsapp/flows/:id/versions/:version_id`
-- `POST /platform/v1/whatsapp/flows/:id/publish`
-- `GET /platform/v1/whatsapp/flows/:id/data_endpoint`
-- `POST /platform/v1/whatsapp/flows/:id/data_endpoint`
-- `POST /platform/v1/whatsapp/flows/:id/data_endpoint/deploy`
-- `POST /platform/v1/whatsapp/flows/:id/data_endpoint/register`
-- `POST /platform/v1/whatsapp/flows/:id/setup_encryption`
-- `GET /platform/v1/whatsapp/phone_numbers/:id`
+## Data endpoint rules
 
-## Meta proxy endpoints (reference)
-These scripts call the Meta proxy endpoints below (base: `.../meta/whatsapp/vXX.X`):
+Handler signature:
+```js
+async function handler(request, env) {
+  const body = await request.json();
+  // body.data_exchange.action: INIT | data_exchange | BACK
+  // body.data_exchange.screen: current screen id
+  // body.data_exchange.data: user inputs
+  return Response.json({
+    version: "3.0",
+    screen: "NEXT_SCREEN_ID",
+    data: { ... }
+  });
+}
+```
 
-- `DELETE /flows/:flow_id` (requires `phone_number_id` or `business_account_id` query)
-- `POST /:phone_number_id/messages`
+- Do not use `export` or `module.exports`
+- Completion uses `screen: "SUCCESS"` with `extension_message_response.params`
+- Do not include `endpoint_uri` or `data_channel_uri` (Kapso injects these)
 
-## Workflow guidance
-1. Discover or create the flow in the Platform API.
-2. Draft the JSON and run `scripts/update-flow-json.js` to create a new version.
-3. If the flow is dynamic, set up encryption and attach a data endpoint (create → deploy → register).
-4. Publish the flow and send a test message to validate.
-5. Use responses/logs to debug issues.
+## Scripts
 
-## Data endpoint authoring
-When writing endpoint code, follow these rules:
+### Platform API
 
-- Define `async function handler(request, env) { ... }`.
-- Do not use `export` or `module.exports`.
-- Output only JavaScript source code (no markdown).
-- Parse input with `await request.json()`.
-- Use `env.KV` and `env.DB` as provided by the runtime.
+| Script | Purpose |
+|--------|---------|
+| `list-flows.js` | List all flows |
+| `create-flow.js` | Create a new flow |
+| `get-flow.js` | Get flow details |
+| `read-flow-json.js` | Read flow JSON |
+| `update-flow-json.js` | Update flow JSON (creates new version) |
+| `publish-flow.js` | Publish a flow |
+| `get-data-endpoint.js` | Get data endpoint config |
+| `set-data-endpoint.js` | Create/update data endpoint code |
+| `deploy-data-endpoint.js` | Deploy data endpoint |
+| `register-data-endpoint.js` | Register data endpoint with Meta |
+| `get-encryption-status.js` | Check encryption status |
+| `setup-encryption.js` | Set up flow encryption |
 
-Data exchange payload essentials:
+### Meta proxy
 
-- `data_exchange.action`: `INIT | data_exchange | BACK`
-- `data_exchange.screen`: current screen id
-- `data_exchange.data`: user inputs
-- `data_exchange.flow_token`: opaque Meta token
-- `signature_valid`: boolean
+| Script | Purpose |
+|--------|---------|
+| `send-test-flow.js` | Send a test flow message |
+| `delete-flow.js` | Delete a flow |
 
-Responses must include `version: "3.0"` and return:
+### Logs and responses
 
-- `{ "version": "3.0", "screen": "NEXT_SCREEN_ID", "data": { ... } }`
-- Completion uses `screen: "SUCCESS"` with `extension_message_response.params`.
+| Script | Purpose |
+|--------|---------|
+| `list-flow-responses.js` | List stored flow responses |
+| `list-function-logs.js` | List function logs |
+| `list-function-invocations.js` | List function invocations |
 
-Do not include `endpoint_uri` or `data_channel_uri` in the response (Kapso injects).
+## Troubleshooting
 
-## Troubleshooting notes
-- If Preview shows `flow_token is missing`, the flow is in dynamic mode without a data endpoint. Attach one and refresh.
-- If encryption setup errors, tell the user to open Settings (gear) and enable encryption for the phone number/WABA.
-- If Meta returns OAuthException 139000 (Integrity), the WABA must be verified in the Meta security center.
-- Remind users that Responses (Inbox) in the toolbar show stored submissions.
+- **Preview shows "flow_token is missing"**: Flow is dynamic without a data endpoint. Attach one and refresh.
+- **Encryption setup errors**: Enable encryption in Settings for the phone number/WABA.
+- **OAuthException 139000 (Integrity)**: WABA must be verified in Meta security center.
 
-## References and assets
-- Flow JSON spec (load on demand): `references/whatsapp-flows-spec.md`
-- Sample flow JSON: `assets/sample-flow.json`
+## References
 
-## API gaps (blocked ops)
-Some endpoints are not exposed yet in the Platform API. These scripts may return 404 and should be treated as blocked:
+- [references/whatsapp-flows-spec.md](references/whatsapp-flows-spec.md) - Flow JSON spec (read before editing)
+- [assets/sample-flow.json](assets/sample-flow.json) - Sample flow JSON
 
-- `list-flow-responses` (Platform API missing flow responses endpoint)
+## Related skills
 
-If a command fails with 404, surface that the endpoint is missing and note the dependency in the `kapso-api` skill reference.
+- `whatsapp-messaging` - WhatsApp messaging and templates
+- `kapso-automation` - Workflow automation
+- `kapso-api` - Platform API and customers

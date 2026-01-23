@@ -1,117 +1,107 @@
 ---
 name: kapso-ops
-description: "Operate and troubleshoot Kapso projects: webhooks, message delivery, API errors, webhook deliveries, and WhatsApp health checks."
+description: Operate and troubleshoot Kapso projects. Manage webhooks, debug message delivery, inspect API errors, and run health checks. Use when diagnosing issues, setting up webhooks, or investigating message failures.
 ---
 
 # Kapso Ops
 
-## Overview
+## When to use
 
-This skill covers operational diagnostics and support workflows:
+Use this skill for operational diagnostics: webhook setup, message delivery investigation, error triage, and WhatsApp health checks.
 
-- Webhook setup, updates, and testing
-- Message delivery timelines and conversation lookup
-- External API and webhook delivery logs
-- WhatsApp configuration health checks
+## Setup
 
-## Before making changes
+Env vars:
+- `KAPSO_API_BASE_URL` (host only, no `/platform/v1`)
+- `KAPSO_API_KEY`
+- `PROJECT_ID`
 
-- Read the relevant files in `references/` for event catalogs and troubleshooting steps.
-- Inspect the exact `scripts/` you will run to confirm endpoint paths and flags.
-- Use `assets/` examples to verify expected response shapes.
+## How to
 
-## Workflow decision tree
+### Set up a webhook
 
-### Webhook setup or failures
-Use the webhook scripts and `references/webhooks-reference.md`.
+1. Create: `node scripts/create.js --phone-number-id <id> --url <https://...> --events <csv>`
+2. Verify signature handling (see `references/webhooks-overview.md`)
+3. Test: `node scripts/test.js --webhook-id <id>`
 
-### Message delivery issues
-Use message debugging scripts and `references/message-debugging-reference.md`.
+### Investigate message delivery
 
-### Errors and log triage
-Use the error/log scripts and `references/triage-reference.md`.
+1. List messages: `node scripts/messages.js --phone-number-id <id>`
+2. Inspect message: `node scripts/message-details.js --message-id <id>`
+3. Find conversation: `node scripts/lookup-conversation.js --phone-number <e164>`
 
-### Config or connectivity health
-Use health check scripts and `references/health-reference.md`.
+### Triage errors
 
-## Quickstart
+1. Message errors: `node scripts/errors.js`
+2. API logs: `node scripts/api-logs.js`
+3. Webhook deliveries: `node scripts/webhook-deliveries.js`
 
-Set env vars: `KAPSO_API_BASE_URL` (host only, no `/platform/v1`), `KAPSO_API_KEY`, `PROJECT_ID`.
+### Run health checks
 
-Start here:
+1. Project overview: `node scripts/overview.js`
+2. Phone number health: `node scripts/whatsapp-health.js --phone-number-id <id>`
 
-- `node scripts/overview.js`
-- `node scripts/messages.js`
-- `node scripts/list.js --phone-number-id <id>`
-
-## Core workflows
-
-### Webhook setup
-1. Create: `node scripts/create.js --phone-number-id <id> --url <https://...> --events <csv|json-array>`.
-2. Verify signature handling (see `references/webhooks-overview.md`).
-3. Test: `node scripts/test.js --webhook-id <id>`.
-
-### Message delivery investigation
-1. List messages: `node scripts/messages.js --phone-number-id <id>`.
-2. Inspect a message: `node scripts/message-details.js --message-id <id>`.
-3. Find the conversation: `node scripts/lookup-conversation.js --phone-number <e164>`.
-
-### Error and log triage
-1. Message errors: `node scripts/errors.js`.
-2. External API logs: `node scripts/api-logs.js`.
-3. Webhook deliveries: `node scripts/webhook-deliveries.js`.
-
-### Health checks
-1. Project overview: `node scripts/overview.js`.
-2. Phone number health: `node scripts/whatsapp-health.js --phone-number-id <id>`.
-
-## Commands
+## Scripts
 
 ### Webhooks
-- `node scripts/list.js --phone-number-id <id> [--scope config|project] [--kind <kapso|meta>] [--page <n>] [--per-page <n>]`
-- `node scripts/get.js --phone-number-id <id> --webhook-id <id> [--scope config|project]`
-- `node scripts/create.js --phone-number-id <id> --url <https://...> --events <csv|json-array> [--kind <kapso|meta>] [--payload-version v1|v2] [--buffer-enabled true|false] [--buffer-window-seconds <n>] [--max-buffer-size <n>] [--inactivity-minutes <n>] [--headers <json>] [--active true|false]`
-- `node scripts/update.js --phone-number-id <id> --webhook-id <id> [--url ...] [--events ...] [--kind <kapso|meta>] [--payload-version v1|v2] [--buffer-enabled true|false] [--buffer-window-seconds <n>] [--max-buffer-size <n>] [--inactivity-minutes <n>] [--headers <json>] [--active true|false]`
-- `node scripts/delete.js --phone-number-id <id> --webhook-id <id> [--scope config|project]`
-- `node scripts/test.js --webhook-id <id> [--event-type <value>]`
 
-### Message debugging
-- `node scripts/messages.js`
-- `node scripts/message-details.js --message-id <id>`
-- `node scripts/lookup-conversation.js --phone-number <e164> | --conversation-id <id>`
+| Script | Purpose |
+|--------|---------|
+| `list.js` | List webhooks for a phone number |
+| `get.js` | Get webhook details |
+| `create.js` | Create a webhook |
+| `update.js` | Update a webhook |
+| `delete.js` | Delete a webhook |
+| `test.js` | Send a test event to a webhook |
 
-### Error and log triage
-- `node scripts/errors.js`
-- `node scripts/api-logs.js`
-- `node scripts/webhook-deliveries.js`
+Common flags for create/update:
+- `--url <https://...>` - Webhook URL
+- `--events <csv>` - Event types (comma-separated)
+- `--kind <kapso|meta>` - Webhook type
+- `--payload-version <v1|v2>` - Payload format (v2 recommended)
+- `--buffer-enabled <true|false>` - Enable buffering
+- `--active <true|false>` - Enable/disable
 
-### Health checks
-- `node scripts/overview.js`
-- `node scripts/whatsapp-health.js --phone-number-id <id>`
+### Messages
+
+| Script | Purpose |
+|--------|---------|
+| `messages.js` | List messages |
+| `message-details.js` | Get message details |
+| `lookup-conversation.js` | Find conversation by phone or ID |
+
+### Errors and logs
+
+| Script | Purpose |
+|--------|---------|
+| `errors.js` | List message errors |
+| `api-logs.js` | List external API logs |
+| `webhook-deliveries.js` | List webhook delivery attempts |
+
+### Health
+
+| Script | Purpose |
+|--------|---------|
+| `overview.js` | Project overview |
+| `whatsapp-health.js` | Phone number health check |
 
 ## Notes
 
-- Use config-level webhooks for `whatsapp.message.*` events.
-- Payload version `v2` is recommended for new integrations.
-- Meta webhooks provide raw payloads; Kapso webhooks support buffering.
-- Message error aggregation uses `/platform/v1/whatsapp/messages` (no time-based filters).
-- Plan/subscription details are not exposed via the Platform API.
+- Use config-level webhooks for `whatsapp.message.*` events
+- Payload version `v2` is recommended for new integrations
+- Meta webhooks provide raw payloads; Kapso webhooks support buffering
 
-## References and assets
+## References
 
-- `references/webhooks-reference.md`
-- `references/webhooks-overview.md`
-- `references/webhooks-event-types.md`
-- `references/message-debugging-reference.md`
-- `references/triage-reference.md`
-- `references/health-reference.md`
-- `assets/webhooks-example.json`
-- `assets/message-debugging-example.json`
-- `assets/triage-example.json`
-- `assets/health-example.json`
+- [references/webhooks-reference.md](references/webhooks-reference.md) - Webhook API reference
+- [references/webhooks-overview.md](references/webhooks-overview.md) - Webhook concepts and setup
+- [references/webhooks-event-types.md](references/webhooks-event-types.md) - Available event types
+- [references/message-debugging-reference.md](references/message-debugging-reference.md) - Message debugging guide
+- [references/triage-reference.md](references/triage-reference.md) - Error triage guide
+- [references/health-reference.md](references/health-reference.md) - Health check guide
 
 ## Related skills
 
-- Automation and functions: `kapso-automation`
-- WhatsApp messaging: `whatsapp-messaging`
-- Platform API and customers: `kapso-api`
+- `kapso-automation` - Automation and functions
+- `whatsapp-messaging` - WhatsApp messaging
+- `kapso-api` - Platform API and customers

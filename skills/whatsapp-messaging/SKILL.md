@@ -1,149 +1,134 @@
 ---
 name: whatsapp-messaging
-description: Send and read WhatsApp messages via Kapso Meta proxy or the whatsapp-cloud-api-js library, and manage WhatsApp templates (create/update/submit/status/send) with media uploads.
+description: Send and read WhatsApp messages via Kapso Meta proxy, manage templates (CRUD/send), and upload media. Use when sending messages, creating templates, or reading inbox history.
 ---
 
 # WhatsApp Messaging
 
-## Overview
+## When to use
 
-Use this skill to send and read WhatsApp messages, manage templates, and upload media using:
+Use this skill when working with WhatsApp messaging via Kapso: sending messages, creating/managing templates, uploading media, or reading inbox history.
 
-- Kapso Meta proxy endpoints (`/meta/whatsapp/vXX.X`)
-- The `@kapso/whatsapp-cloud-api` SDK
-- Template management scripts bundled here
+## Setup
 
-## Before making changes
-
-- Read the relevant files in `references/` for payload rules and SDK usage.
-- Inspect the exact `scripts/` you will run to confirm endpoint paths and flags.
-- Use `assets/` examples as the base for templates and send-time payloads.
-
-## Quickstart
-
-Set env vars:
-
+Env vars:
 - `KAPSO_API_BASE_URL` (host only, no `/platform/v1`)
 - `KAPSO_API_KEY`
 - `PROJECT_ID`
-- `KAPSO_META_GRAPH_VERSION` (optional, default: `v24.0`)
-- `KAPSO_META_BASE_URL` (optional, defaults to `${KAPSO_API_BASE_URL}/meta/whatsapp`)
+- `KAPSO_META_GRAPH_VERSION` (optional, default `v24.0`)
 
-Run scripts with Node or Bun:
+## Discover IDs first
 
-- `node scripts/list-platform-phone-numbers.mjs`
-- `node scripts/list-templates.mjs --help`
+Two Meta IDs are needed for different operations:
 
-## Critical: Discover IDs (do this first)
+| ID | Used for | How to discover |
+|----|----------|-----------------|
+| `business_account_id` (WABA) | Template CRUD | `node scripts/list-platform-phone-numbers.mjs` |
+| `phone_number_id` | Sending messages, media upload | `node scripts/list-platform-phone-numbers.mjs` |
 
-Templates and message sends use two different Meta IDs:
+## SDK setup
 
-- `business_account_id` (WABA ID): required for template CRUD (`/{business_account_id}/message_templates`)
-- `phone_number_id` (Meta phone number id): required for sending messages + media upload (`/{phone_number_id}/messages`, `/{phone_number_id}/media`)
+Install:
+```bash
+npm install @kapso/whatsapp-cloud-api
+```
 
-Use the Platform API (recommended) to discover both:
+Create client:
+```ts
+import { WhatsAppClient } from "@kapso/whatsapp-cloud-api";
 
-- `node scripts/list-platform-phone-numbers.mjs`
+const client = new WhatsAppClient({
+  baseUrl: "https://api.kapso.ai/meta/whatsapp",
+  kapsoApiKey: process.env.KAPSO_API_KEY!
+});
+```
 
-## Golden path: Create + send a UTILITY template
+## How to
+
+### Send a text message
+
+Via SDK:
+```ts
+await client.messages.sendText({
+  phoneNumberId: "<PHONE_NUMBER_ID>",
+  to: "+15551234567",
+  body: "Hello from Kapso"
+});
+```
+
+### Send a template message
 
 1. Discover IDs: `node scripts/list-platform-phone-numbers.mjs`
-2. Draft a template payload (start from `assets/template-utility-order-status-update.json`).
-3. Create: `node scripts/create-template.mjs --business-account-id <WABA_ID> --file assets/template-utility-order-status-update.json`
-4. Check status: `node scripts/template-status.mjs --business-account-id <WABA_ID> --name order_status_update`
-5. Send a test message (start from `assets/send-template-order-status-update.json`):
-   - `node scripts/send-template.mjs --phone-number-id <PHONE_NUMBER_ID> --file assets/send-template-order-status-update.json`
+2. Draft template payload from `assets/template-utility-order-status-update.json`
+3. Create: `node scripts/create-template.mjs --business-account-id <WABA_ID> --file <payload.json>`
+4. Check status: `node scripts/template-status.mjs --business-account-id <WABA_ID> --name <name>`
+5. Send: `node scripts/send-template.mjs --phone-number-id <ID> --file <send-payload.json>`
 
-## Golden path: Send an interactive message
+### Send an interactive message
 
-Interactive messages are session messages (typically within WhatsApp's 24-hour window). If you need outbound notifications outside the window, use a template.
+Interactive messages require an active 24-hour session window. For outbound notifications outside the window, use templates.
 
-1. Discover `phone_number_id`: `node scripts/list-platform-phone-numbers.mjs`
-2. Pick an interactive payload from `assets/send-interactive-*.json` and customize `to`/content.
-3. Send: `node scripts/send-interactive.mjs --phone-number-id <PHONE_NUMBER_ID> --file assets/send-interactive-buttons.json`
+1. Discover `phone_number_id`
+2. Pick payload from `assets/send-interactive-*.json`
+3. Send: `node scripts/send-interactive.mjs --phone-number-id <ID> --file <payload.json>`
 
-## Read inbox data (preferred: Meta proxy + SDK)
+### Read inbox data
 
-Preferred path: use Meta proxy message/conversation endpoints or the SDK. This mirrors Meta's Cloud API and is the source of truth for inbox history.
+Use Meta proxy or SDK:
+- Proxy: `GET /{phone_number_id}/messages`, `GET /{phone_number_id}/conversations`
+- SDK: `client.messages.query()`, `client.conversations.list()`
 
-- Meta proxy API: `GET /{phone_number_id}/messages`, `GET /{phone_number_id}/conversations`, `GET /{phone_number_id}/conversations/{conversation_id}`.
-- SDK: `client.messages.query` / `client.messages.listByConversation`, `client.conversations.list`, `client.conversations.get`.
+## Template rules
 
-Alternate path (Platform API): `GET /platform/v1/whatsapp/messages` and `GET /platform/v1/whatsapp/conversations`. Use this if you're already in Platform API workflows or ops scripts. For params, see `kapso-api/references/platform-api-reference.md`, or run `node /agent-skills/kapso-ops/scripts/messages.js` and `node /agent-skills/kapso-ops/scripts/lookup-conversation.js`.
+Creation:
+- Use `parameter_format: "NAMED"` with `{{param_name}}` (preferred over positional)
+- Include examples when using variables in HEADER/BODY
+- Use `language` (not `language_code`)
+- Don't interleave QUICK_REPLY with URL/PHONE_NUMBER buttons
+- URL button variables must be at the end of the URL and use positional `{{1}}`
 
-## Template workflow (general)
-
-1. Confirm `business_account_id` and `phone_number_id`.
-2. Draft the template payload (prefer NAMED params).
-3. Create/update (Meta submission happens immediately).
-4. Check status with list/status scripts.
-5. Send a test message with send-time components.
-
-## Template authoring rules
-
-- Prefer `parameter_format: "NAMED"` with `{{param_name}}`.
-- If any variables appear in HEADER or BODY, include examples.
-- Do not interleave QUICK_REPLY with URL/PHONE_NUMBER buttons.
-- For URL button variables, use positional placeholders in the URL (for example `...{{1}}`).
-- Dynamic URL variables must be at the end of the URL.
-- AUTHENTICATION templates require OTP button and business verification.
-
-## Send-time rules
-
-- For NAMED templates, include `parameter_name` for parameters in `header`/`body` components.
-- URL buttons use a `button` component at send-time (`sub_type: "url"`, `index: "0"`, etc).
-- POSITIONAL templates must preserve order.
-- AUTHENTICATION templates require the OTP in the body param and URL button param.
-- Media headers at send-time must include either `id` or `link` (never both).
-
-## Media header workflow
-
-1. Upload media with `scripts/upload-media.mjs` (returns `media_id`).
-2. Use `media_id` or a public link in the send-time header.
-3. Header handles for template review are not available via proxy.
+Send-time:
+- For NAMED templates, include `parameter_name` in header/body params
+- URL buttons need a `button` component with `sub_type: "url"` and `index`
+- Media headers use either `id` or `link` (never both)
 
 ## Scripts
 
-- `scripts/list-platform-phone-numbers.mjs`: Platform discovery; shows `business_account_id` + `phone_number_id` for connected numbers.
-- `scripts/list-connected-numbers.mjs`: Meta proxy query for a WABA's phone numbers (requires `business_account_id`).
-- `scripts/list-templates.mjs`: List templates under a WABA (filters: name/status/category/language, etc).
-- `scripts/template-status.mjs`: Fetch one template by name and show status/components.
-- `scripts/create-template.mjs`: Create a template under a WABA from `--json` or `--file`.
-- `scripts/update-template.mjs`: Update an existing template by `--hsm-id` under a WABA.
-- `scripts/submit-template.mjs`: Alias for create (Meta submission happens immediately on create).
-- `scripts/send-template.mjs`: Send a template message via Meta proxy (requires `phone_number_id`).
-- `scripts/send-interactive.mjs`: Send an interactive message (buttons/list/cta_url/etc) via Meta proxy (requires `phone_number_id`).
-- `scripts/upload-media.mjs`: Upload media for send-time headers (returns `media_id`; requires `phone_number_id`).
-- `scripts/upload-template-header-handle.mjs`: Explains why `header_handle` upload is blocked via proxy and points to the correct approach.
+| Script | Purpose | Required ID |
+|--------|---------|-------------|
+| `list-platform-phone-numbers.mjs` | Discover business_account_id + phone_number_id | — |
+| `list-connected-numbers.mjs` | List WABA phone numbers | business_account_id |
+| `list-templates.mjs` | List templates (with filters) | business_account_id |
+| `template-status.mjs` | Check single template status | business_account_id |
+| `create-template.mjs` | Create a template | business_account_id |
+| `update-template.mjs` | Update existing template | business_account_id |
+| `send-template.mjs` | Send template message | phone_number_id |
+| `send-interactive.mjs` | Send interactive message | phone_number_id |
+| `upload-media.mjs` | Upload media for send-time headers | phone_number_id |
 
-## Common pitfalls
+## Assets
 
-- Use `language` (not `language_code`) in template creation payloads.
-- Include example payloads whenever you use variables in HEADER/BODY.
-- For NAMED templates, include `parameter_name` in send-time `header`/`body` parameters.
-- Use `scripts/upload-media.mjs` for send-time headers (template review `header_handle` is a different mechanism).
+| File | Description |
+|------|-------------|
+| `template-utility-order-status-update.json` | UTILITY template with named params + URL button |
+| `send-template-order-status-update.json` | Send-time payload for order_status_update |
+| `template-utility-named.json` | UTILITY template showing button ordering rules |
+| `template-marketing-media-header.json` | MARKETING template with IMAGE header |
+| `template-authentication-otp.json` | AUTHENTICATION OTP template (COPY_CODE) |
+| `send-interactive-buttons.json` | Interactive button message |
+| `send-interactive-list.json` | Interactive list message |
+| `send-interactive-cta-url.json` | Interactive CTA URL message |
+| `send-interactive-location-request.json` | Location request message |
+| `send-interactive-catalog-message.json` | Catalog message |
 
-## References (read when you need detail)
+## References
 
-- `references/templates-reference.md`: Template creation rules + components cheat sheet + send-time components (includes ID discovery notes).
-- `references/whatsapp-api-reference.md`: Meta proxy payloads for sending and listing messages/conversations (with query params).
-- `references/whatsapp-cloud-api-js.md`: SDK usage for sending + reading message history (Kapso proxy only; camelCase helpers).
-
-## Assets (copy/paste starting points)
-
-- `assets/template-utility-order-status-update.json`: UTILITY template definition for order updates (named params + URL button example).
-- `assets/send-template-order-status-update.json`: Matching send-time payload for `order_status_update` (header/body params + URL button param).
-- `assets/send-interactive-buttons.json`: Interactive button message payload (session message).
-- `assets/send-interactive-list.json`: Interactive list payload (session message).
-- `assets/send-interactive-cta-url.json`: Interactive CTA URL payload (session message).
-- `assets/send-interactive-location-request.json`: Interactive location request payload (session message).
-- `assets/send-interactive-catalog-message.json`: Interactive catalog message payload (session message).
-- `assets/template-utility-named.json`: UTILITY template definition showing named params + mixed buttons ordering rules.
-- `assets/template-marketing-media-header.json`: MARKETING template definition using an IMAGE header (requires review-time `header_handle` example).
-- `assets/template-authentication-otp.json`: AUTHENTICATION OTP template definition (COPY_CODE button).
+- [references/templates-reference.md](references/templates-reference.md) - Template creation rules, components cheat sheet, send-time components
+- [references/whatsapp-api-reference.md](references/whatsapp-api-reference.md) - Meta proxy payloads for messages and conversations
+- [references/whatsapp-cloud-api-js.md](references/whatsapp-cloud-api-js.md) - SDK usage for sending and reading messages
 
 ## Related skills
 
-- Workflow automation: `kapso-automation`
-- WhatsApp Flows: `whatsapp-flows`
-- Platform API and customers: `kapso-api`
+- `kapso-automation` - Workflow automation
+- `whatsapp-flows` - WhatsApp Flows
+- `kapso-api` - Platform API and customers

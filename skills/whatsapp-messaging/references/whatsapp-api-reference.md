@@ -4,22 +4,24 @@ title: WhatsApp Cloud API via Kapso Proxy
 
 # WhatsApp Cloud API (Kapso Meta Proxy)
 
+REST API reference for sending messages and querying history via Kapso's Meta proxy.
+
 ## Base URL and auth
 
-- Base URL: `${KAPSO_API_BASE_URL}/meta/whatsapp/v24.0` (override with `KAPSO_META_BASE_URL`, which should point to `${KAPSO_API_BASE_URL}/meta/whatsapp`)
-- Auth header: `X-API-Key: <api_key>`
-
-All requests are routed through Kapso, but payloads mirror the Meta Cloud API.
-
-## Send a message
-
-Endpoint:
-
 ```
-POST /{phone_number_id}/messages
+Base URL: ${KAPSO_API_BASE_URL}/meta/whatsapp/v24.0
+Auth header: X-API-Key: <api_key>
 ```
 
-Text example:
+All payloads mirror the Meta Cloud API. Kapso adds storage and query features.
+
+## Send messages
+
+Endpoint: `POST /{phone_number_id}/messages`
+
+All payloads require `messaging_product: "whatsapp"`.
+
+### Text
 
 ```json
 {
@@ -30,7 +32,7 @@ Text example:
 }
 ```
 
-Image by link:
+### Image
 
 ```json
 {
@@ -41,31 +43,92 @@ Image by link:
 }
 ```
 
-Template send:
+Use `id` instead of `link` for uploaded media.
+
+### Video
 
 ```json
 {
   "messaging_product": "whatsapp",
   "to": "15551234567",
-  "type": "template",
-  "template": {
-    "name": "order_ready_named",
-    "language": { "code": "en_US" },
-    "components": [
-      {
-        "type": "body",
-        "parameters": [
-          { "type": "text", "parameter_name": "order_id", "text": "ORDER-123" }
-        ]
-      }
-    ]
-  }
+  "type": "video",
+  "video": { "link": "https://example.com/clip.mp4", "caption": "Video" }
 }
 ```
 
-Note: Interactive messages are session messages and typically require an active user-initiated conversation (24-hour window). If the window is expired, use a template instead.
+### Audio
 
-Interactive buttons:
+```json
+{
+  "messaging_product": "whatsapp",
+  "to": "15551234567",
+  "type": "audio",
+  "audio": { "link": "https://example.com/audio.mp3" }
+}
+```
+
+### Document
+
+```json
+{
+  "messaging_product": "whatsapp",
+  "to": "15551234567",
+  "type": "document",
+  "document": { "link": "https://example.com/file.pdf", "filename": "file.pdf", "caption": "Report" }
+}
+```
+
+### Sticker
+
+```json
+{
+  "messaging_product": "whatsapp",
+  "to": "15551234567",
+  "type": "sticker",
+  "sticker": { "id": "<MEDIA_ID>" }
+}
+```
+
+### Location
+
+```json
+{
+  "messaging_product": "whatsapp",
+  "to": "15551234567",
+  "type": "location",
+  "location": { "latitude": -33.45, "longitude": -70.66, "name": "Santiago", "address": "CL" }
+}
+```
+
+### Contacts
+
+```json
+{
+  "messaging_product": "whatsapp",
+  "to": "15551234567",
+  "type": "contacts",
+  "contacts": [
+    { "name": { "formatted_name": "John Doe" }, "phones": [{ "phone": "+15551234567", "type": "WORK" }] }
+  ]
+}
+```
+
+### Reaction
+
+```json
+{
+  "messaging_product": "whatsapp",
+  "to": "15551234567",
+  "type": "reaction",
+  "reaction": { "message_id": "wamid......", "emoji": "👍" }
+}
+```
+
+## Interactive messages
+
+Require an active 24-hour session window. Use templates for outbound notifications outside the window.
+
+### Buttons
 
 ```json
 {
@@ -85,7 +148,7 @@ Interactive buttons:
 }
 ```
 
-Interactive list:
+### List
 
 ```json
 {
@@ -111,7 +174,7 @@ Interactive list:
 }
 ```
 
-Interactive CTA URL:
+### CTA URL
 
 ```json
 {
@@ -123,16 +186,13 @@ Interactive CTA URL:
     "body": { "text": "Track your order" },
     "action": {
       "name": "cta_url",
-      "parameters": {
-        "display_text": "Track order",
-        "url": "https://example.com/orders/ORDER-123"
-      }
+      "parameters": { "display_text": "Track order", "url": "https://example.com/orders/123" }
     }
   }
 }
 ```
 
-Location request:
+### Location request
 
 ```json
 {
@@ -147,7 +207,7 @@ Location request:
 }
 ```
 
-Catalog message:
+### Catalog message
 
 ```json
 {
@@ -165,68 +225,103 @@ Catalog message:
 }
 ```
 
-## List messages (history)
+## Template messages
 
-Endpoint:
+```json
+{
+  "messaging_product": "whatsapp",
+  "to": "15551234567",
+  "type": "template",
+  "template": {
+    "name": "order_ready_named",
+    "language": { "code": "en_US" },
+    "components": [
+      {
+        "type": "body",
+        "parameters": [
+          { "type": "text", "parameter_name": "order_id", "text": "ORDER-123" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+See [templates-reference.md](templates-reference.md) for full component rules.
+
+## Mark as read
+
+```json
+{
+  "messaging_product": "whatsapp",
+  "status": "read",
+  "message_id": "wamid......"
+}
+```
+
+## Query history (Kapso)
+
+These endpoints are Kapso-specific and store/retrieve conversation data.
+
+### List messages
 
 ```
 GET /{phone_number_id}/messages
 ```
 
-Query params (all optional):
+| Param | Description |
+|-------|-------------|
+| `conversation_id` | Filter by conversation UUID |
+| `direction` | `inbound` or `outbound` |
+| `status` | `pending`, `sent`, `delivered`, `read`, `failed` |
+| `since` / `until` | ISO 8601 timestamps |
+| `limit` | Max 100 |
+| `before` / `after` | Cursor pagination |
+| `fields` | Use `kapso(...)` for extra fields |
 
-- `conversation_id`
-- `direction` (inbound|outbound)
-- `status` (pending|sent|delivered|read|failed)
-- `since` / `until` (ISO 8601)
-- `limit` (max 100)
-- `before` / `after` (cursor pagination)
-- `fields` (use `kapso()` to include Kapso extensions)
-
-Example:
-
-```
-GET /{phone_number_id}/messages?conversation_id=<uuid>&limit=50
-```
-
-## List conversations
-
-Endpoint:
+### List conversations
 
 ```
 GET /{phone_number_id}/conversations
 ```
 
-Query params (all optional):
+| Param | Description |
+|-------|-------------|
+| `status` | `active` or `ended` |
+| `last_active_since` / `last_active_until` | ISO 8601 timestamps |
+| `phone_number` | Filter by customer phone (E.164) |
+| `limit` | Max 100 |
+| `before` / `after` | Cursor pagination |
+| `fields` | Use `kapso(...)` for extra fields |
 
-- `status` (active|ended)
-- `last_active_since` / `last_active_until` (ISO 8601)
-- `phone_number` (E.164)
-- `limit` (max 100)
-- `before` / `after` (cursor pagination)
-- `fields` (use `kapso()` to include Kapso extensions)
-
-## Get a conversation
-
-Endpoint:
+### Get a conversation
 
 ```
 GET /{phone_number_id}/conversations/{conversation_id}
 ```
 
-## Upload media
+## Kapso extensions
 
-Endpoint:
+Add `fields=kapso(...)` to list endpoints to include extra data:
+
+- `kapso(default)` or `kapso(*)` - all default fields
+- `kapso(direction,media_url,contact_name)` - specific fields
+- `kapso()` - omit Kapso fields entirely
+
+Common fields: `direction`, `status`, `media_url`, `contact_name`, `flow_response`, `flow_token`.
+
+See SDK docs for the full field list.
+
+## Media upload
 
 ```
 POST /{phone_number_id}/media
 ```
 
-Use this for send-time header media. The response returns `id` for future sends.
+Returns `id` for use in send payloads.
 
 ## Notes
 
-- Use `phone_number_id` (Meta ID) for message sends.
-- Discover `phone_number_id` + `business_account_id` via `GET /platform/v1/whatsapp/phone_numbers` (or `node scripts/list-platform-phone-numbers.mjs`).
-- Payloads must include `messaging_product: "whatsapp"`.
-- Keep `KAPSO_META_GRAPH_VERSION` aligned with the Meta version you target.
+- Discover `phone_number_id` + `business_account_id` via `GET /platform/v1/whatsapp/phone_numbers`
+- All send payloads require `messaging_product: "whatsapp"`
+- Graph version is controlled by `KAPSO_META_GRAPH_VERSION` (default `v24.0`)
