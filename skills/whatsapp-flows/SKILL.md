@@ -28,7 +28,7 @@ node scripts/list-flows.js
 
 1. Create flow: `node scripts/create-flow.js --phone-number-id <id> --name <name>`
 2. Read `references/whatsapp-flows-spec.md` for Flow JSON rules
-3. Update JSON: `node scripts/update-flow-json.js --flow-id <id> --file <path>`
+3. Update JSON: `node scripts/update-flow-json.js --flow-id <id> --json-file <path>`
 4. Publish: `node scripts/publish-flow.js --flow-id <id>`
 5. Test: `node scripts/send-test-flow.js --phone-number-id <id> --flow-id <id> --to <phone>`
 
@@ -47,9 +47,17 @@ node scripts/list-flows.js
 
 ## Flow JSON rules
 
+Static flows (no data endpoint):
+- Use `version: "7.3"`
+- `routing_model` and `data_api_version` are optional
+- See `assets/sample-flow.json`
+
+Dynamic flows (with data endpoint):
 - Use `version: "7.3"` with `data_api_version: "3.0"`
-- Read the full spec in `references/whatsapp-flows-spec.md` before editing
-- Use `assets/sample-flow.json` as a starting point
+- `routing_model` is **required** - defines valid screen transitions
+- See `assets/dynamic-flow.json`
+
+Read the full spec in `references/whatsapp-flows-spec.md` before editing.
 
 ## Data endpoint rules
 
@@ -115,7 +123,8 @@ async function handler(request, env) {
 ## References
 
 - [references/whatsapp-flows-spec.md](references/whatsapp-flows-spec.md) - Flow JSON spec (read before editing)
-- [assets/sample-flow.json](assets/sample-flow.json) - Sample flow JSON
+- [assets/sample-flow.json](assets/sample-flow.json) - Static flow example (no endpoint)
+- [assets/dynamic-flow.json](assets/dynamic-flow.json) - Dynamic flow example (with endpoint)
 
 ## Related skills
 
