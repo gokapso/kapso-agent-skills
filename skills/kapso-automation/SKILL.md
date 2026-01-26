@@ -1,6 +1,6 @@
 ---
 name: kapso-automation
-description: Manage Kapso workflows, functions, and databases. Edit workflow graphs, configure triggers, manage executions, create functions, and perform database CRUD. Use when building automations, editing workflows, or managing project data.
+description: Manage Kapso workflows, AI agents, functions, and databases. Edit workflow graphs, configure triggers, manage executions, create functions, and perform database CRUD. Use when building automations, editing workflows, or managing project data.
 ---
 
 # Kapso Automation
