@@ -1,5 +1,7 @@
 # Kapso Agent Skills
 
+![Kapso Agent Skills](https://app.kapso.ai/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsiZGF0YSI6ImI3YTg1NDE1LThjYzAtNGE2ZC04MGM3LWJhOGY2ODI0MTY3MSIsInB1ciI6ImJsb2JfaWQifX0=--1057c1ee33188e5afd42480e99937ae352e1a99b/kapso-agent-skills-image.png)
+
 > **Alpha**: These skills are in active development and subject to rapid change.
 
 Agent skills for [Kapso](https://kapso.ai), built on the open [Agent Skills](https://agentskills.io) format.
