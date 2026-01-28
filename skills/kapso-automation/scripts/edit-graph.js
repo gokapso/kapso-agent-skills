@@ -167,7 +167,7 @@ function applyReplacement(content, oldText, newText, replaceAll) {
 function usage() {
   return ok({
     usage: 'node scripts/edit-graph.js <workflow-id> --expected-lock-version <n> --old <text>|--old-file <path> --new <text>|--new-file <path> [--replace-all]',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -277,8 +277,7 @@ async function main() {
       status: update.data.status,
       lock_version: update.data.lock_version,
       updated_at: update.data.updated_at
-    },
-    project_id: config.projectId
+    }
   }));
 
   return 0;

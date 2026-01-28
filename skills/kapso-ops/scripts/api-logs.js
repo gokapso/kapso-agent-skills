@@ -14,7 +14,7 @@ async function main() {
           ok: true,
           usage:
             'node /agent-skills/kapso-ops/scripts/api-logs.js [--period <24h|7d|30d>] [--endpoint <value>] [--status-code <code>] [--errors-only true|false] [--page <n>] [--per-page <n>]',
-          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
         },
         null,
         2

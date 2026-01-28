@@ -6,7 +6,6 @@ Required env vars:
 
 - `KAPSO_API_BASE_URL` (host only, no `/platform/v1`, e.g. `https://api.kapso.ai`)
 - `KAPSO_API_KEY`
-- `PROJECT_ID`
 - `KAPSO_META_GRAPH_VERSION` (optional, default: `v24.0`)
 - `KAPSO_META_BASE_URL` (optional, defaults to `${KAPSO_API_BASE_URL}/meta/whatsapp`)
 

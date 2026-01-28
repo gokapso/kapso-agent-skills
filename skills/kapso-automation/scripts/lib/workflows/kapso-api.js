@@ -32,15 +32,13 @@ function validateBaseUrl(baseUrl) {
 
 export function loadConfig(options = {}) {
   const requireApi = options.requireApi !== false;
-  const requireProjectId = options.requireProjectId !== false;
 
   const rawBaseUrl = requireApi ? requireEnv('KAPSO_API_BASE_URL') : (process.env.KAPSO_API_BASE_URL || '');
   const baseUrl = rawBaseUrl ? normalizeBaseUrl(rawBaseUrl) : '';
   validateBaseUrl(baseUrl);
   const apiKey = requireApi ? requireEnv('KAPSO_API_KEY') : (process.env.KAPSO_API_KEY || '');
-  const projectId = requireProjectId ? requireEnv('PROJECT_ID') : (process.env.PROJECT_ID || '');
 
-  return { baseUrl, apiKey, projectId };
+  return { baseUrl, apiKey };
 }
 
 function buildUrl(baseUrl, path) {

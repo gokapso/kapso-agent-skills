@@ -6,7 +6,7 @@ import { parseArgs, getFlag, getBooleanFlag } from './lib/workflows/args.js';
 function usage() {
   return ok({
     usage: 'node scripts/get-context-value.js <execution-id> --variable-path <path>',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID'],
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY'],
     examples: ['node scripts/get-context-value.js exec_123 --variable-path vars.user_name']
   });
 }

@@ -6,7 +6,7 @@ import { parseArgs, getFlag, getBooleanFlag } from './lib/workflows/args.js';
 function usage() {
   return ok({
     usage: 'node scripts/variables-set.js <workflow-id> --name <name> --value <value>',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -27,7 +27,6 @@ async function main() {
     workflow_id: workflowId,
     name,
     value,
-    project_id: config.projectId,
     note: 'Only variable discovery is proposed; CRUD endpoints are missing.'
   }, true));
 

@@ -18,7 +18,7 @@ function addLineNumbers(text) {
 function usage() {
   return ok({
     usage: 'node scripts/get-graph.js <workflow-id> [--workflow-id <id>]',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -73,8 +73,7 @@ async function main() {
     definition,
     workflow_graph_pretty: pretty,
     workflow_graph_with_lines: withLines,
-    workflow_graph_sha256: hash,
-    project_id: config.projectId
+    workflow_graph_sha256: hash
   }));
 
   return 0;

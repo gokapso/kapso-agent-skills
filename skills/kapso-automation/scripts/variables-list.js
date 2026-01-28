@@ -6,7 +6,7 @@ import { parseArgs, getFlag, getBooleanFlag } from './lib/workflows/args.js';
 function usage() {
   return ok({
     usage: 'node scripts/variables-list.js <workflow-id> [--workflow-id <id>]',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -43,8 +43,7 @@ async function main() {
 
   printJson(ok({
     workflow_id: workflowId,
-    variables: response.data,
-    project_id: config.projectId
+    variables: response.data
   }));
 
   return 0;

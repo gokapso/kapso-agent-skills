@@ -19,7 +19,7 @@ async function main() {
           ok: true,
           usage:
             'node /agent-skills/kapso-automation/scripts/delete-row.js --table <name> (--id <row-id> | --filters <json>)',
-          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
         },
         null,
         2

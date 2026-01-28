@@ -58,7 +58,7 @@ function parseDefinitionInput(raw) {
 function usage() {
   return ok({
     usage: 'node scripts/update-graph.js <workflow-id> --expected-lock-version <n> --definition-file <path>|--definition-json <json>',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -142,8 +142,7 @@ async function main() {
       lock_version: update.data.lock_version,
       updated_at: update.data.updated_at
     },
-    workflow_graph_sha256: sha256(pretty),
-    project_id: config.projectId
+    workflow_graph_sha256: sha256(pretty)
   }));
 
   return 0;

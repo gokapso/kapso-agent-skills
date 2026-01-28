@@ -17,7 +17,7 @@ async function main() {
         {
           ok: true,
           usage: 'node /agent-skills/kapso-automation/scripts/deploy-function.js --function-id <id>',
-          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
         },
         null,
         2

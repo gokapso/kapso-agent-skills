@@ -6,7 +6,7 @@ import { parseArgs, getFlag, getBooleanFlag, getNumberFlag } from './lib/workflo
 function usage() {
   return ok({
     usage: 'node scripts/list-executions.js <workflow-id> [--status <status>] [--waiting-reason <value>] [--whatsapp-conversation-id <id>] [--created-after <iso>] [--created-before <iso>] [--page <n>] [--per-page <n>]',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -43,7 +43,7 @@ async function main() {
     return 2;
   }
 
-  printJson(ok({ executions: response.data, project_id: config.projectId }));
+  printJson(ok({ executions: response.data }));
   return 0;
 }
 

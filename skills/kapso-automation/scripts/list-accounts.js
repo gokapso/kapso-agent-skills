@@ -10,7 +10,7 @@ function usage() {
       'Use accounts[].pipedream_account_id for any --account-id flag.',
       'The internal accounts[].id will not work for integrations.'
     ],
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -51,7 +51,6 @@ async function main() {
 
   printJson(ok({
     accounts: payload,
-    project_id: config.projectId,
     note: 'Use preferred_account_id (pipedream_account_id) for create-integration/configure-prop.'
   }));
   return 0;

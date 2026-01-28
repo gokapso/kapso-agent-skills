@@ -10,7 +10,6 @@ Required env vars:
 
 - `KAPSO_API_BASE_URL` (host only, no `/platform/v1`, example: `https://api.kapso.ai`)
 - `KAPSO_API_KEY`
-- `PROJECT_ID`
 
 ## Scripts
 

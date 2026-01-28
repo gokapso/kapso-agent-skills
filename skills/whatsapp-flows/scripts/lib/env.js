@@ -24,7 +24,6 @@ function getConfig() {
   return {
     baseUrl,
     apiKey: requireEnv('KAPSO_API_KEY'),
-    projectId: requireEnv('PROJECT_ID'),
     graphVersion: normalizeGraphVersion(process.env.META_GRAPH_VERSION)
   };
 }

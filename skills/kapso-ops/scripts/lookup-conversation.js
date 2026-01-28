@@ -18,7 +18,7 @@ async function main() {
           ok: true,
           usage:
             'node /agent-skills/kapso-ops/scripts/lookup-conversation.js [--phone-number <e164>] [--phone-number-id <id>] [--conversation-id <uuid>] [--status <active|ended>] [--page <n>] [--per-page <n>]',
-          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
         },
         null,
         2

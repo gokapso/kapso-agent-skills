@@ -14,7 +14,6 @@ Use this skill to manage WhatsApp Flows end-to-end: discover flows, edit flow JS
 Env vars:
 - `KAPSO_API_BASE_URL` (host only, no `/platform/v1`)
 - `KAPSO_API_KEY`
-- `PROJECT_ID`
 - `META_GRAPH_VERSION` (optional, default `v24.0`)
 
 Run scripts with Node or Bun:

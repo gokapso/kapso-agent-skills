@@ -216,7 +216,7 @@ function validateDefinition(definition) {
 function usage() {
   return ok({
     usage: 'node scripts/validate-graph.js --workflow-id <id> | --definition-file <path> | --definition-json <json>',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 

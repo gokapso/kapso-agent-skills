@@ -7,7 +7,7 @@ function usage() {
   return ok({
     usage:
       'node scripts/list-execution-events.js <execution-id> [--event-type <type>] [--page <n>] [--per-page <n>]',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -49,8 +49,7 @@ async function main() {
 
   printJson(ok({
     execution_id: executionId,
-    events: response.data,
-    project_id: config.projectId
+    events: response.data
   }));
 
   return 0;

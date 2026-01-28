@@ -11,7 +11,7 @@ function usage() {
       'If you pass an internal account UUID, the script will try to resolve it.',
       'Use --variable-definitions to define agent tool inputs (placeholders in configured_props become inputs).'
     ],
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -127,7 +127,7 @@ async function main() {
     return 2;
   }
 
-  printJson(ok({ integration: response.data, project_id: config.projectId }));
+  printJson(ok({ integration: response.data }));
   return 0;
 }
 

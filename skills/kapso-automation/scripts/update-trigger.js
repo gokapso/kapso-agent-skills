@@ -6,7 +6,7 @@ import { parseArgs, getFlag, getBooleanFlag } from './lib/workflows/args.js';
 function usage() {
   return ok({
     usage: 'node scripts/update-trigger.js --trigger-id <id> --active true|false',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -50,7 +50,7 @@ async function main() {
     return 2;
   }
 
-  printJson(ok({ trigger: response.data, project_id: config.projectId }));
+  printJson(ok({ trigger: response.data }));
   return 0;
 }
 

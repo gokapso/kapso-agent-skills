@@ -35,8 +35,7 @@ function kapsoConfigFromEnv() {
   validateBaseUrl(baseUrl);
   return {
     baseUrl,
-    apiKey: requireEnv('KAPSO_API_KEY'),
-    projectId: requireEnv('PROJECT_ID')
+    apiKey: requireEnv('KAPSO_API_KEY')
   };
 }
 

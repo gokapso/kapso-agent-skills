@@ -11,7 +11,7 @@ function usage() {
       'Use --app-slug to narrow results to a single app.',
       'action_id equals the action key returned in results.'
     ],
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -53,7 +53,6 @@ async function main() {
 
   printJson(ok({
     actions: payload,
-    project_id: config.projectId,
     note: 'Use action_id (same as key) with get-action-schema/create-integration.'
   }));
   return 0;

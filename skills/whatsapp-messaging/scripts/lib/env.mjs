@@ -31,13 +31,11 @@ export function metaProxyConfig() {
   const rawBase = process.env.KAPSO_META_BASE_URL || requireEnv('KAPSO_API_BASE_URL');
   const baseUrl = normalizeMetaBase(rawBase);
   const apiKey = requireEnv('KAPSO_API_KEY');
-  const projectId = requireEnv('PROJECT_ID');
   const graphVersion = normalizeGraphVersion(process.env.KAPSO_META_GRAPH_VERSION || 'v24.0');
 
   return {
     baseUrl,
     apiKey,
-    projectId,
     graphVersion
   };
 }

@@ -6,7 +6,7 @@ import { parseArgs, getBooleanFlag, getNumberFlag } from './lib/workflows/args.j
 function usage() {
   return ok({
     usage: 'node scripts/list-whatsapp-phone-numbers.js [--per-page <n>] [--page <n>]',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -45,7 +45,6 @@ async function main() {
   printJson(ok({
     phone_numbers: phoneNumbers,
     raw: payload,
-    project_id: config.projectId,
     note: 'Use phone_number_id for inbound_message triggers.'
   }));
   return 0;

@@ -13,8 +13,7 @@ function normalizeBaseUrl(raw) {
 function kapsoConfigFromEnv() {
   return {
     baseUrl: normalizeBaseUrl(requireEnv('KAPSO_API_BASE_URL')),
-    apiKey: requireEnv('KAPSO_API_KEY'),
-    projectId: requireEnv('PROJECT_ID')
+    apiKey: requireEnv('KAPSO_API_KEY')
   };
 }
 

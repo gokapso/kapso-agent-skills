@@ -10,7 +10,7 @@ function usage() {
       'Use accounts[].pipedream_account_id for --account-id.',
       'If you pass an internal account UUID, the script will try to resolve it.'
     ],
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -103,7 +103,7 @@ async function main() {
     return 2;
   }
 
-  printJson(ok({ result: response.data, project_id: config.projectId }));
+  printJson(ok({ result: response.data }));
   return 0;
 }
 

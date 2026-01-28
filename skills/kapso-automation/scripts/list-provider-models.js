@@ -6,7 +6,7 @@ import { parseArgs, getBooleanFlag } from './lib/workflows/args.js';
 function usage() {
   return ok({
     usage: 'node scripts/list-provider-models.js',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -36,8 +36,7 @@ async function main() {
   }
 
   printJson(ok({
-    provider_models: response.data,
-    project_id: config.projectId
+    provider_models: response.data
   }));
 
   return 0;

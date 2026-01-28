@@ -9,7 +9,7 @@ function usage() {
     notes: [
       'Use --variable-definitions to update required tool input fields.'
     ],
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -72,7 +72,7 @@ async function main() {
     return 2;
   }
 
-  printJson(ok({ integration: response.data, project_id: config.projectId }));
+  printJson(ok({ integration: response.data }));
   return 0;
 }
 

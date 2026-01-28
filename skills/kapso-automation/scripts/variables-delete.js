@@ -6,7 +6,7 @@ import { parseArgs, getFlag, getBooleanFlag } from './lib/workflows/args.js';
 function usage() {
   return ok({
     usage: 'node scripts/variables-delete.js <workflow-id> --name <name>',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -25,7 +25,6 @@ async function main() {
   printJson(err('Workflow variables delete is not available in the Platform API.', {
     workflow_id: workflowId,
     name,
-    project_id: config.projectId,
     note: 'Only variable discovery is proposed; CRUD endpoints are missing.'
   }, true));
 

@@ -9,7 +9,7 @@ function usage() {
     notes: [
       'Check integrations[].variable_definitions to see required tool inputs.'
     ],
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -31,7 +31,7 @@ async function main() {
     return 2;
   }
 
-  printJson(ok({ integrations: response.data, project_id: config.projectId }));
+  printJson(ok({ integrations: response.data }));
   return 0;
 }
 

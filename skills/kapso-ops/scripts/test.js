@@ -17,7 +17,7 @@ async function main() {
         {
           ok: true,
           usage: 'node /agent-skills/kapso-ops/scripts/test.js --webhook-id <id> [--event-type <value>]',
-          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+          env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
         },
         null,
         2

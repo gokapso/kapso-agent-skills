@@ -14,7 +14,6 @@ Use this skill for operational diagnostics: webhook setup, message delivery inve
 Env vars:
 - `KAPSO_API_BASE_URL` (host only, no `/platform/v1`)
 - `KAPSO_API_KEY`
-- `PROJECT_ID`
 
 ## How to
 

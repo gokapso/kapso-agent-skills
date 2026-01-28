@@ -6,7 +6,7 @@ import { parseArgs, getBooleanFlag } from './lib/workflows/args.js';
 function usage() {
   return ok({
     usage: 'node scripts/create-connect-token.js',
-    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY', 'PROJECT_ID']
+    env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
 
@@ -28,7 +28,7 @@ async function main() {
     return 2;
   }
 
-  printJson(ok({ connect_token: response.data, project_id: config.projectId }));
+  printJson(ok({ connect_token: response.data }));
   return 0;
 }
 
