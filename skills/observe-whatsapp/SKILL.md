@@ -1,6 +1,6 @@
 ---
 name: observe-whatsapp
-description: Observe and troubleshoot WhatsApp in Kapso: debug message delivery, inspect webhook deliveries/retries, triage API errors, and run health checks. Use when investigating production issues, message failures, or webhook delivery problems.
+description: "Observe and troubleshoot WhatsApp in Kapso: debug message delivery, inspect webhook deliveries/retries, triage API errors, and run health checks. Use when investigating production issues, message failures, or webhook delivery problems."
 ---
 
 # Observe WhatsApp
@@ -104,4 +104,3 @@ node scripts/openapi-explore.mjs --spec platform schema WebhookDelivery
 |scripts/lib/triage:{args.js,kapso-api.js}
 ```
 <!-- FILEMAP:END -->
-
