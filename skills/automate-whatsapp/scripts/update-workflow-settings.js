@@ -5,7 +5,7 @@ import { parseArgs, getFlag, getBooleanFlag, getNumberFlag } from './lib/workflo
 
 function usage() {
   return ok({
-    usage: 'node scripts/update-workflow-settings.js <workflow-id> --lock-version <n> [--name <name>] [--description <text>] [--status <draft|active|archived>] [--message-debounce-seconds <n>]',
+    usage: 'node scripts/update-workflow-settings.js <workflow-id> --lock-version <n> [--name <name>] [--description <text>] [--status <draft|active|archived>] [--message-debounce-seconds <n>] [--inbound-message-read-mode <disabled|read_only|read_with_typing>]',
     env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
   });
 }
@@ -39,11 +39,13 @@ async function main() {
   const description = getFlag(parsed.flags, 'description');
   const status = getFlag(parsed.flags, 'status');
   const messageDebounce = getNumberFlag(parsed.flags, 'message-debounce-seconds');
+  const inboundMessageReadMode = getFlag(parsed.flags, 'inbound-message-read-mode');
 
   if (name) payload.workflow.name = name;
   if (description) payload.workflow.description = description;
   if (status) payload.workflow.status = status;
   if (messageDebounce !== undefined) payload.workflow.message_debounce_seconds = messageDebounce;
+  if (inboundMessageReadMode) payload.workflow.inbound_message_read_mode = inboundMessageReadMode;
 
   const config = loadConfig();
   const response = await requestJson(config, {
