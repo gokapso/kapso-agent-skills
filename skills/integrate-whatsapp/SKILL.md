@@ -7,6 +7,11 @@ description: "Connect WhatsApp to your product with Kapso: onboard customers wit
 
 ## Setup
 
+Preferred path:
+- Kapso CLI installed and authenticated (`kapso login`)
+- Use `kapso status` to confirm project access before onboarding or messaging
+
+Fallback path:
 Env vars:
 - `KAPSO_API_BASE_URL` (host only, no `/platform/v1`)
 - `KAPSO_API_KEY`
@@ -24,7 +29,20 @@ npm i
 
 ## Connect WhatsApp (setup links)
 
-Typical onboarding flow:
+Preferred onboarding path (CLI):
+
+1. Start onboarding: `kapso setup`
+2. If setup is blocked, resolve context with:
+   - `kapso projects list`
+   - `kapso projects use <project-id>`
+   - `kapso customers list`
+   - `kapso customers new --name "<customer-name>" --external-id <external-id>`
+   - `kapso setup --customer <customer-id>`
+3. Complete the hosted onboarding URL
+4. Confirm connected numbers: `kapso whatsapp numbers list --output json`
+5. Resolve the exact number you want to operate: `kapso whatsapp numbers resolve --phone-number "<display-number>" --output json`
+
+Fallback onboarding flow (direct API):
 
 1. Create customer: `POST /platform/v1/customers`
 2. Generate setup link: `POST /platform/v1/customers/:id/setup_links`
@@ -35,10 +53,11 @@ Detect connection:
 - Project webhook `whatsapp.phone_number.created` (recommended)
 - Success redirect URL query params (use for frontend UX)
 
-Provision phone numbers (setup link config):
+Recommended Kapso setup-link defaults:
 ```json
 {
   "setup_link": {
+    "allowed_connection_types": ["dedicated"],
     "provision_phone_number": true,
     "phone_number_country_isos": ["US"]
   }
@@ -46,6 +65,9 @@ Provision phone numbers (setup link config):
 ```
 
 Notes:
+- `kapso setup` and `kapso whatsapp numbers new` use dedicated plus provisioning by default.
+- Keep `phone_number_country_isos`, `phone_number_area_code`, `language`, and redirect URLs as optional overrides.
+
 - Platform API base: `/platform/v1`
 - Meta proxy base: `/meta/whatsapp/v24.0` (messaging, templates, media)
 - Use `phone_number_id` as the primary WhatsApp identifier
@@ -92,8 +114,22 @@ Two Meta IDs are needed for different operations:
 
 | ID | Used for | How to discover |
 |----|----------|-----------------|
-| `business_account_id` (WABA) | Template CRUD | `node scripts/list-platform-phone-numbers.mjs` |
-| `phone_number_id` | Sending messages, media upload | `node scripts/list-platform-phone-numbers.mjs` |
+| `business_account_id` (WABA) | Template CRUD | `kapso whatsapp numbers resolve --phone-number "<display-number>" --output json` or `node scripts/list-platform-phone-numbers.mjs` |
+| `phone_number_id` | Sending messages, media upload | `kapso whatsapp numbers resolve --phone-number "<display-number>" --output json` or `node scripts/list-platform-phone-numbers.mjs` |
+
+### Operate with the CLI first
+
+Common commands:
+```bash
+kapso whatsapp numbers list --output json
+kapso whatsapp numbers resolve --phone-number "<display-number>" --output json
+kapso whatsapp messages send --phone-number-id <PHONE_NUMBER_ID> --to <wa-id> --text "Hello from Kapso"
+kapso whatsapp messages list --phone-number-id <PHONE_NUMBER_ID> --limit 50 --output json
+kapso whatsapp messages get <MESSAGE_ID> --phone-number-id <PHONE_NUMBER_ID> --output json
+kapso whatsapp conversations list --phone-number-id <PHONE_NUMBER_ID> --output json
+kapso whatsapp templates list --phone-number-id <PHONE_NUMBER_ID> --output json
+kapso whatsapp templates get <TEMPLATE_ID> --phone-number-id <PHONE_NUMBER_ID> --output json
+```
 
 ### SDK setup
 
@@ -141,9 +177,12 @@ Interactive messages require an active 24-hour session window. For outbound noti
 
 ### Read inbox data
 
-Use Meta proxy or SDK:
+Preferred path:
+- CLI: `kapso whatsapp messages ...`, `kapso whatsapp conversations ...`, `kapso whatsapp templates ...`
+
+Fallback path:
 - Proxy: `GET /{phone_number_id}/messages`, `GET /{phone_number_id}/conversations`
-- SDK: `client.messages.query()`, `client.conversations.list()`
+- SDK: `client.messages.query()`, `client.messages.get()`, `client.conversations.list()`, `client.conversations.get()`, `client.templates.get()`
 
 ### Template rules
 
@@ -329,4 +368,3 @@ node scripts/openapi-explore.mjs --spec platform search "setup link"
 |scripts/lib/webhooks:{args.js,kapso-api.js,webhook.js}
 ```
 <!-- FILEMAP:END -->
-

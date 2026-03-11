@@ -76,6 +76,22 @@ Supported languages:
 
 When omitted, language is auto-detected from the customer's browser.
 
+## Recommended Kapso default
+
+For Kapso-managed onboarding, prefer a dedicated connection plus phone provisioning:
+
+```json
+{
+  "setup_link": {
+    "allowed_connection_types": ["dedicated"],
+    "provision_phone_number": true,
+    "phone_number_country_isos": ["US"]
+  }
+}
+```
+
+`kapso setup` and `kapso whatsapp numbers new` follow this default path and let you override country, area code, language, and redirect URLs when needed.
+
 ## Connection type control
 
 ### Show both options (default)

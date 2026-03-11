@@ -11,11 +11,26 @@ Use this skill to build and run WhatsApp automations: workflow CRUD, graph edits
 
 ## Setup
 
+Preferred path:
+- Kapso CLI installed and authenticated (`kapso login`)
+- Use the CLI for project/number discovery before wiring triggers or automations
+
+Fallback path:
 Env vars:
 - `KAPSO_API_BASE_URL` (host only, no `/platform/v1`)
 - `KAPSO_API_KEY`
 
 ## How to
+
+### Discover phone numbers first
+
+Preferred path:
+1. Check project state: `kapso status`
+2. List connected numbers: `kapso whatsapp numbers list --output json`
+3. Resolve a display number when needed: `kapso whatsapp numbers resolve --phone-number "<display-number>" --output json`
+
+Fallback path:
+1. List number configs for triggers: `node scripts/list-whatsapp-phone-numbers.js`
 
 ### Edit a workflow graph
 
@@ -36,7 +51,7 @@ If you get a lock_version conflict: re-fetch, re-apply changes, retry with new l
 3. Toggle: `node scripts/update-trigger.js --trigger-id <id> --active true|false`
 4. Delete: `node scripts/delete-trigger.js --trigger-id <id>`
 
-For inbound_message triggers, first run `node scripts/list-whatsapp-phone-numbers.js` to get `phone_number_id`.
+For inbound_message triggers, prefer `kapso whatsapp numbers resolve --phone-number "<display-number>" --output json` to get the exact `phone_number_id`. Fall back to `node scripts/list-whatsapp-phone-numbers.js` when the CLI is unavailable.
 
 ### Debug executions
 
@@ -252,4 +267,3 @@ Other references:
 |scripts/lib/workflows:{args.js,kapso-api.js,result.js}
 ```
 <!-- FILEMAP:END -->
-

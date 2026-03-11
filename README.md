@@ -9,8 +9,28 @@ Agent skills for [Kapso](https://kapso.ai), built on the open [Agent Skills](htt
 ## Installation
 
 ```bash
-npx skills add gokapso/agent-skills
+npx skills add gokapso/kapso-agent-skills
 ```
+
+## Environment Variables
+
+Set these environment variables before using the skills:
+
+```bash
+export KAPSO_API_BASE_URL="https://api.kapso.ai"
+export KAPSO_API_KEY="your-api-key"
+```
+
+| Variable | Description |
+|----------|-------------|
+| `KAPSO_API_BASE_URL` | Kapso API host. Use `https://api.kapso.ai` |
+| `KAPSO_API_KEY` | API key from the Kapso web app at [app.kapso.ai](https://app.kapso.ai) |
+
+## Path selection
+
+- Prefer the Kapso CLI when it is installed and already authenticated. The skill docs now show CLI-first flows where the CLI already covers the task well.
+- Keep the provided scripts and direct API references as the fallback path when the CLI is unavailable or when a task still needs script-only operations.
+- If you use the CLI path, start with `kapso login` and `kapso status`.
 
 ## What are Agent Skills?
 
@@ -33,6 +53,10 @@ Skills use **progressive disclosure**: agents load only the name and description
 - **observe-whatsapp**: Debug delivery issues, inspect webhook deliveries, triage errors, run health checks
 
 Each skill contains detailed documentation in its `SKILL.md` file.
+
+## Maintenance
+
+Shared references in this repo also exist under `kapso-docs/skills/skills`. Keep mirrored docs in sync when updating shared onboarding or API guidance.
 
 ## SKILL.md format
 

@@ -43,6 +43,21 @@ await client.messages.sendText({
 });
 ```
 
+## Send a raw payload
+
+```ts
+await client.messages.sendRaw({
+  phoneNumberId: "<PHONE_NUMBER_ID>",
+  payload: {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: "+15551234567",
+    type: "text",
+    text: { body: "Hello from a raw payload" }
+  }
+});
+```
+
 ## Send a template message
 
 ```ts
@@ -106,6 +121,15 @@ const messages = await client.messages.query({
 });
 ```
 
+## Get a single message
+
+```ts
+const message = await client.messages.get({
+  phoneNumberId: "<PHONE_NUMBER_ID>",
+  messageId: "wamid.HBgL..."
+});
+```
+
 ## List messages for a conversation (shortcut)
 
 ```ts
@@ -116,10 +140,19 @@ const messages = await client.messages.listByConversation({
 });
 ```
 
+## Get a template
+
+```ts
+const template = await client.templates.get({
+  businessAccountId: "<BUSINESS_ACCOUNT_ID>",
+  templateId: "564750795574598"
+});
+```
+
 ## Notes
 
-- Use `phoneNumberId` from the connected WhatsApp number (discover via `node scripts/list-platform-phone-numbers.mjs`).
+- Use `phoneNumberId` from the connected WhatsApp number (discover via `kapso whatsapp numbers resolve --phone-number "<display-number>" --output json` or `node scripts/list-platform-phone-numbers.mjs`).
 - With Kapso proxy, keep `baseUrl` and `kapsoApiKey` set.
 - Template rules still apply (examples, button ordering, media headers).
-- History endpoints (`messages.query`, `messages.listByConversation`, `conversations.list/get`) require Kapso proxy; they are not available with a direct Meta access token.
+- History endpoints (`messages.query`, `messages.get`, `messages.listByConversation`, `conversations.list/get`) require Kapso proxy; they are not available with a direct Meta access token.
 - Requests use camelCase keys and the SDK converts to snake_case for the API; responses come back camelCase.
