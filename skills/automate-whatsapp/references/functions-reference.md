@@ -23,6 +23,7 @@ Do not use `export` or arrow functions. Return a `Response` object.
 2. Deploy the function (required before use).
 3. Read `endpoint_url` from the function record after deploy.
 4. If the function should accept anonymous callers, set `public_endpoint: true` when creating or updating it. This is only supported for Cloudflare functions.
+5. New functions default to `invoke_response_mode: "passthrough"`, which returns the function response body directly on successful invoke. Legacy wrapped functions can later be updated to `passthrough` once callers are ready.
 
 ## Platform API payload envelope
 
@@ -34,6 +35,7 @@ When calling the Platform API directly (not via scripts), wrap attributes under 
     "name": "...",
     "description": "...",
     "code": "...",
+    "invoke_response_mode": "passthrough",
     "public_endpoint": false
   }
 }
@@ -43,6 +45,8 @@ Notes:
 - `endpoint_url` for deployed Cloudflare functions is `https://api.kapso.ai/platform/v1/functions/{function_id}/invoke`
 - Private functions require `X-API-Key`
 - Public Cloudflare functions (`public_endpoint=true`) can be invoked without an API key
+- `invoke_response_mode=passthrough` forwards the successful function response body directly
+- `invoke_response_mode=wrapped` is a legacy mode for older wrapped functions
 
 ## Workflow node payload (Function / Decide)
 

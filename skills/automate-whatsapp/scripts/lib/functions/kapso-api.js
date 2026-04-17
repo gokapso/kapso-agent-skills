@@ -61,7 +61,16 @@ async function kapsoRequest(config, path, init = {}) {
     throw new Error(`Kapso API request failed (status=${response.status}) body=${text}`);
   }
 
-  return text ? JSON.parse(text) : {};
+  const contentType = response.headers.get('content-type') || '';
+  if (!text) {
+    return {};
+  }
+
+  if (contentType.includes('application/json')) {
+    return JSON.parse(text);
+  }
+
+  return text;
 }
 
 export {

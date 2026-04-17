@@ -1,6 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { kapsoConfigFromEnv, kapsoRequest } from './lib/functions/kapso-api.js';
-import { hasHelpFlag, parseBooleanFlag, parseFlags, requireFlag } from './lib/functions/args.js';
+import {
+  hasHelpFlag,
+  parseBooleanFlag,
+  parseEnumFlag,
+  parseFlags,
+  requireFlag
+} from './lib/functions/args.js';
 
 function ok(data) {
   return { ok: true, data };
@@ -28,7 +34,7 @@ async function main() {
         {
           ok: true,
           usage:
-            'node scripts/update-function.js --function-id <id> --name <name> (--code <js> | --code-file <path>) [--description <text>] [--public-endpoint <true|false>]',
+            'node scripts/update-function.js --function-id <id> --name <name> (--code <js> | --code-file <path>) [--description <text>] [--public-endpoint <true|false>] [--invoke-response-mode passthrough|wrapped]',
           env: ['KAPSO_API_BASE_URL', 'KAPSO_API_KEY']
         },
         null,
@@ -45,11 +51,15 @@ async function main() {
     const code = resolveCode(flags);
     const payload = { name, code };
     const publicEndpoint = parseBooleanFlag(flags, 'public-endpoint');
+    const invokeResponseMode = parseEnumFlag(flags, 'invoke-response-mode', ['passthrough', 'wrapped']);
     if (typeof flags.description === 'string' && flags.description.length > 0) {
       payload.description = flags.description;
     }
     if (publicEndpoint !== undefined) {
       payload.public_endpoint = publicEndpoint;
+    }
+    if (invokeResponseMode !== undefined) {
+      payload.invoke_response_mode = invokeResponseMode;
     }
     const config = kapsoConfigFromEnv();
     const data = await kapsoRequest(config, `/platform/v1/functions/${encodeURIComponent(functionId)}`, {

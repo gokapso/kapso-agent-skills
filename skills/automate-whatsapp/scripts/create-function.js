@@ -1,6 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { kapsoConfigFromEnv, kapsoRequest } from './lib/functions/kapso-api.js';
-import { hasHelpFlag, parseBooleanFlag, parseFlags, requireFlag } from './lib/functions/args.js';
+import {
+  hasHelpFlag,
+  parseBooleanFlag,
+  parseFlags,
+  requireFlag
+} from './lib/functions/args.js';
 
 function ok(data) {
   return { ok: true, data };

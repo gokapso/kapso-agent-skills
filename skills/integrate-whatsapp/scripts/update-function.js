@@ -4,6 +4,7 @@ const {
   requireStringFlag,
   getStringFlag,
   getBooleanFlag,
+  getEnumFlag,
   readFlagText,
   readFlagJson
 } = require('./lib/cli');
@@ -21,6 +22,7 @@ run(async () => {
 
   const runtimeConfig = await readFlagJson(flags, 'runtime-config', 'runtime-config-file');
   const publicEndpoint = getBooleanFlag(flags, 'public-endpoint');
+  const invokeResponseMode = getEnumFlag(flags, 'invoke-response-mode', ['passthrough', 'wrapped']);
 
   const body = {
     function: {
@@ -33,6 +35,9 @@ run(async () => {
 
   if (publicEndpoint !== undefined) {
     body.function.public_endpoint = publicEndpoint;
+  }
+  if (invokeResponseMode !== undefined) {
+    body.function.invoke_response_mode = invokeResponseMode;
   }
 
   return platformRequest({

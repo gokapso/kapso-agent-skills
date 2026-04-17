@@ -57,6 +57,14 @@ function getBooleanFlag(flags, name) {
   throw new Error(`Invalid boolean for --${name}: ${raw}`);
 }
 
+function getEnumFlag(flags, name, allowedValues) {
+  const raw = getStringFlag(flags, name);
+  if (raw === undefined) return undefined;
+  if (allowedValues.includes(raw)) return raw;
+
+  throw new Error(`Invalid value for --${name}: ${raw}. Expected one of: ${allowedValues.join(', ')}`);
+}
+
 function getNumberFlag(flags, name) {
   const raw = getStringFlag(flags, name);
   if (raw === undefined) return undefined;
@@ -91,6 +99,7 @@ module.exports = {
   getStringFlag,
   requireStringFlag,
   getBooleanFlag,
+  getEnumFlag,
   getNumberFlag,
   readFlagText,
   readFlagJson

@@ -56,6 +56,22 @@ function parseBooleanFlag(flags, name) {
   throw new Error(`Invalid boolean for --${name}: ${String(value)}`);
 }
 
+function parseEnumFlag(flags, name, allowedValues) {
+  const value = flags[name];
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const normalized = String(value);
+  if (allowedValues.includes(normalized)) {
+    return normalized;
+  }
+
+  throw new Error(
+    `Invalid value for --${name}: ${normalized}. Expected one of: ${allowedValues.join(', ')}`
+  );
+}
+
 function parseJsonValue(value, name) {
   if (value === undefined || value === true) {
     throw new Error(`Missing required JSON for --${name}`);
@@ -72,5 +88,6 @@ export {
   parseFlags,
   requireFlag,
   parseBooleanFlag,
+  parseEnumFlag,
   parseJsonValue
 };

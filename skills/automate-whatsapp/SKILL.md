@@ -68,6 +68,7 @@ For inbound_message triggers, prefer `kapso whatsapp numbers resolve --phone-num
 4. Verify: `node scripts/get-function.js --function-id <id>`
 
 Use `--public-endpoint true` when the function should be callable without `X-API-Key` via the Kapso-hosted invoke URL. This is only supported for Cloudflare functions.
+New functions default to `invoke_response_mode=passthrough`, which returns the function body directly on successful invoke. Legacy wrapped functions can be migrated later with `update-function.js`.
 
 ### Set up agent node with app integrations
 
@@ -164,7 +165,7 @@ Always use this structure:
 | `list-functions.js` | List project functions |
 | `get-function.js` | Get function details + code |
 | `create-function.js` | Create a function, optionally with a public invoke endpoint |
-| `update-function.js` | Update function code or public endpoint setting |
+| `update-function.js` | Update function code, public endpoint setting, or migrate a legacy wrapped function to passthrough |
 | `deploy-function.js` | Deploy function to runtime |
 | `invoke-function.js` | Invoke function with payload |
 | `list-function-invocations.js` | List function invocations |
