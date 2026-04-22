@@ -78,6 +78,26 @@ New functions default to `invoke_response_mode=passthrough`, which returns the f
 4. Create integration: `node scripts/create-integration.js --action-id <id> --app-slug <slug> --account-id <id> --configured-props <json>`
 5. Add tools to agent node via `flow_agent_app_integration_tools`
 
+### Set up agent node with remote sandbox repositories
+
+1. Find model: `node scripts/list-provider-models.js`
+2. Edit the agent node under `data.config`
+3. Set `sandbox_enabled: true`
+4. Set `sandbox_network_mode` to `allow_all` or `allow_list`
+5. If using `allow_list`, add extra outbound hosts in `sandbox_allowed_outbound_hosts`
+6. Add GitHub repositories to `flow_agent_resources` with:
+   - `resource_type: "github_repository"`
+   - `repo_url`
+   - `branch`
+   - `pat`
+7. Validate and update the graph
+
+Notes:
+- v1 supports GitHub repositories only
+- Use a repository root URL, not a GitHub file URL or `tree/...` URL
+- Repositories are mounted into `/workspace/repos/<repo-slug>` inside the remote sandbox
+- Use `references/node-types.md` for the exact agent resource shape
+
 ### Database CRUD
 
 1. List tables: `node scripts/list-tables.js`
