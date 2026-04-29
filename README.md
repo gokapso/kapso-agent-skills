@@ -9,7 +9,7 @@ Agent skills for [Kapso](https://kapso.ai), built on the open [Agent Skills](htt
 ## Installation
 
 ```bash
-npx skills add gokapso/kapso-agent-skills
+npx skills add gokapso/agent-skills
 ```
 
 ## Environment Variables
@@ -28,7 +28,7 @@ export KAPSO_API_KEY="your-api-key"
 
 ## Path selection
 
-- Prefer the Kapso CLI when it is installed and already authenticated. The skill docs now show CLI-first flows where the CLI already covers the task well.
+- Prefer the Kapso CLI when it is installed and already authenticated. The skill docs show CLI-first flows where the CLI already covers the task well.
 - Keep the provided scripts and direct API references as the fallback path when the CLI is unavailable or when a task still needs script-only operations.
 - If you use the CLI path, start with `kapso login` and `kapso status`.
 

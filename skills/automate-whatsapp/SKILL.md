@@ -13,7 +13,8 @@ Use this skill to build and run WhatsApp automations: workflow CRUD, graph edits
 
 Preferred path:
 - Kapso CLI installed and authenticated (`kapso login`)
-- Use the CLI for project/number discovery before wiring triggers or automations
+- For workflow and function edits, use source-controlled projects with `kapso link`, `kapso pull`, `kapso build`, and `kapso push`
+- For workflow code, use `@kapso/workflows` and export a `Workflow` instance from `workflow.js` or `workflow.ts`
 
 Fallback path:
 Env vars:
@@ -21,6 +22,56 @@ Env vars:
 - `KAPSO_API_KEY`
 
 ## How to
+
+### Edit workflows locally
+
+Use this path first when the user is working in, or can create, a local repo.
+
+```bash
+npm install --save-dev @kapso/cli @kapso/workflows
+npx kapso login
+npx kapso link --project <project-id>
+npx kapso pull
+```
+
+Edit `workflows/<workflow-slug>/workflow.js` or `workflow.ts` with `@kapso/workflows`:
+
+```ts
+import { START, Workflow } from "@kapso/workflows";
+
+const workflow = new Workflow("inbound-support", {
+  name: "Inbound Support",
+  status: "draft",
+});
+
+workflow.addTrigger({
+  type: "inbound_message",
+  phoneNumberId: "<phone-number-id>",
+});
+
+workflow.addNode(START, {
+  position: { x: 100, y: 100 },
+});
+
+workflow.addNode("reply", {
+  type: "send_text",
+  message: "Thanks for reaching out.",
+});
+
+workflow.addEdge(START, "reply");
+
+export default workflow;
+```
+
+Build and push:
+
+```bash
+npx kapso build
+npx kapso push --dry-run
+npx kapso push workflow <workflow-slug>
+```
+
+Use `npx kapso push` to push every local function and workflow. See `references/local-workflow-source.md` for repo layout, source-file behavior, and JSON-only editing.
 
 ### Discover phone numbers first
 
@@ -32,7 +83,9 @@ Preferred path:
 Fallback path:
 1. List number configs for triggers: `node scripts/list-whatsapp-phone-numbers.js`
 
-### Edit a workflow graph
+### Edit a workflow graph through API scripts
+
+Prefer local source sync for workflow edits. Use these scripts as a fallback for debugging, direct graph inspection, or API-only environments.
 
 1. Fetch graph: `node scripts/get-graph.js <workflow_id>` (note the `lock_version`)
 2. Edit the JSON (see graph rules below)
@@ -254,6 +307,7 @@ node scripts/openapi-explore.mjs --spec platform op queryDatabaseRows
 ## References
 
 Read before editing:
+- [references/local-workflow-source.md](references/local-workflow-source.md) - CLI source sync, repo layout, and `@kapso/workflows`
 - [references/graph-contract.md](references/graph-contract.md) - Graph schema, computed vs editable fields, lock_version
 - [references/node-types.md](references/node-types.md) - Node types and config shapes
 - [references/workflow-overview.md](references/workflow-overview.md) - Execution flow and states
@@ -292,7 +346,7 @@ Other references:
 [automate-whatsapp file map]|root: .
 |.:{package.json,SKILL.md}
 |assets:{agent-app-integration-example.json,agent-remote-sandbox-github-repo-example.json,databases-example.json,function-decide-route-interactive-buttons.json,functions-example.json,workflow-agent-simple.json,workflow-api-template-wait-agent.json,workflow-customer-support-intake-agent.json,workflow-decision.json,workflow-interactive-buttons-decide-ai.json,workflow-interactive-buttons-decide-function.json,workflow-linear.json}
-|references:{agent-remote-sandbox.md,app-integrations.md,databases-reference.md,execution-context.md,function-contracts.md,functions-payloads.md,functions-reference.md,graph-contract.md,node-types.md,triggers.md,workflow-overview.md,workflow-reference.md}
+|references:{agent-remote-sandbox.md,app-integrations.md,databases-reference.md,execution-context.md,function-contracts.md,functions-payloads.md,functions-reference.md,graph-contract.md,local-workflow-source.md,node-types.md,triggers.md,workflow-overview.md,workflow-reference.md}
 |scripts:{configure-prop.js,create-connect-token.js,create-function.js,create-integration.js,create-row.js,create-trigger.js,create-workflow.js,delete-integration.js,delete-row.js,delete-trigger.js,deploy-function.js,edit-graph.js,get-action-schema.js,get-context-value.js,get-execution-event.js,get-execution.js,get-function.js,get-graph.js,get-table.js,get-workflow.js,invoke-function.js,list-accounts.js,list-apps.js,list-execution-events.js,list-executions.js,list-function-invocations.js,list-functions.js,list-integrations.js,list-provider-models.js,list-tables.js,list-triggers.js,list-whatsapp-phone-numbers.js,list-workflows.js,openapi-explore.mjs,query-rows.js,reload-props.js,resume-execution.js,search-actions.js,update-execution-status.js,update-function.js,update-graph.js,update-integration.js,update-row.js,update-trigger.js,update-workflow-settings.js,upsert-row.js,validate-graph.js,variables-delete.js,variables-list.js,variables-set.js}
 |scripts/lib/databases:{args.js,filters.js,kapso-api.js}
 |scripts/lib/functions:{args.js,kapso-api.js}

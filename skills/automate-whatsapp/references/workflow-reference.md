@@ -2,7 +2,9 @@
 
 ## Overview
 
-This skill manages workflow graphs, triggers, executions, and app integrations over the Platform API and provides local graph validation. Variables CRUD is not supported and will return blocked responses.
+This skill manages workflow graphs, triggers, executions, and app integrations. Prefer the Kapso CLI local source workflow for normal workflow/function edits; use these Platform API scripts as fallback tools for debugging, unsupported CLI tasks, and API-only environments. Variables CRUD is not supported and will return blocked responses.
+
+For the CLI source-sync workflow and `@kapso/workflows`, read `references/local-workflow-source.md`.
 
 ## Environment
 
