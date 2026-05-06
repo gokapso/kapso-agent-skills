@@ -173,6 +173,26 @@ Automatically provision a phone number for customers:
 }
 ```
 
+## Reconnect existing numbers
+
+For customers whose WhatsApp connection broke (token revoked, password change, Meta de-auth), generate a setup link scoped to one of their existing numbers:
+
+```json
+{
+  "setup_link": {
+    "reconnect_phone_number": "+14155551234"
+  }
+}
+```
+
+Constraints:
+- The number must match an existing production WhatsApp config on the same customer.
+- `provision_phone_number` is forced to `false`.
+- `allowed_connection_types` is locked to `["dedicated"]` or `["coexistence"]` to match the existing config.
+- During Meta's embedded signup, the customer must reconnect the same WABA + number — selecting a different one fails the setup.
+
+The hosted onboarding page uses this to refresh credentials in place rather than create a new config.
+
 ## Full example
 
 ```javascript
