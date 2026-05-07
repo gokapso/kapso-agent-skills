@@ -54,7 +54,12 @@ Message list query params (use `GET /whatsapp/messages`):
 - `phone_number_id`, `conversation_id`, `phone_number`
 - `direction` (inbound|outbound), `status` (pending|sent|delivered|read|failed)
 - `message_type` (text|image|audio|video|document), `has_media` (true|false)
-- `page`, `per_page`
+- `page`, `per_page` (legacy offset; prefer cursor pagination — `limit`, `after`, `before`)
+
+Pagination notes for `GET /whatsapp/messages`:
+- Legacy offset responses include `meta.total_count_estimated: true` and an `X-Total-Count-Estimated: true` header. `total_count` and `total_pages` are bounded synthetic estimates — do **not** treat them as exact counts.
+- Use `meta.has_next` to decide whether to fetch the next page.
+- For traversal, use cursor pagination instead.
 
 Example:
 `GET /whatsapp/messages?conversation_id=<uuid>&phone_number_id=<id>&direction=inbound&per_page=50`
